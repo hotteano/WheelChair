@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WheelChair - 基础示例</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    .description {
+      color: #666;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    #editor {
+      min-height: 300px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1rem;
+    }
+    .toolbar {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+      background: #f9f9f9;
+      border-radius: 4px 4px 0 0;
+    }
+    .btn {
+      padding: 0.375rem 0.75rem;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .btn:hover {
+      background: #f0f0f0;
+    }
+    .btn.active {
+      background: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦽 WheelChair 基础示例</h1>
+    <p class="description">
+      这是最简单的 WheelChair 编辑器配置。只包含基础功能，
+      适合快速集成到您的项目中。
+    </p>
+    
+    <div class="toolbar">
+      <button class="btn" data-command="bold">粗体</button>
+      <button class="btn" data-command="italic">斜体</button>
+      <button class="btn" data-command="underline">下划线</button>
+      <button class="btn" data-command="heading" data-level="2">标题</button>
+      <button class="btn" data-command="bulletList">列表</button>
+    </div>
+    <div id="editor"></div>
+  </div>
+
+  <script type="module">
+    // 基础使用示例
+    import { WheelChairEditor, useWheelChairEditor } from '@wheelchair/core';
+    import '@wheelchair/core/styles';
+
+    // 创建编辑器实例
+    const editor = useWheelChairEditor({
+      element: document.getElementById('editor'),
+      content: '<p>欢迎使用 WheelChair 编辑器！</p><p>这是一个基础示例，展示了最简单的配置方式。</p>',
+      placeholder: '开始写作...',
+    });
+
+    // 工具栏按钮事件绑定
+    document.querySelectorAll('.toolbar .btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const command = btn.dataset.command;
+        const level = btn.dataset.level;
+        
+        if (command === 'heading' && level) {
+          editor.chain().focus().toggleHeading({ level: parseInt(level) }).run();
+        } else {
+          editor.chain().focus()[`toggle${command.charAt(0).toUpperCase() + command.slice(1)}`]?.().run();
+        }
+      });
+    });
+
+    // 监听编辑器状态更新按钮样式
+    editor.on('selectionUpdate', () => {
+      document.querySelectorAll('.toolbar .btn').forEach(btn => {
+        const command = btn.dataset.command;
+        const level = btn.dataset.level;
+        
+        let isActive = false;
+        if (command === 'heading' && level) {
+          isActive = editor.isActive('heading', { level: parseInt(level) });
+        } else {
+          isActive = editor.isActive(command);
+        }
+        
+        btn.classList.toggle('active', isActive);
+      });
+    });
+  </script>
+</body>
+</html>

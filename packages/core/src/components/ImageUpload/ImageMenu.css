@@ -1,0 +1,167 @@
+/* ImageMenu 组件样式 */
+
+.wheelchair-image-menu {
+  position: absolute;
+  z-index: 100;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+}
+
+/* 主菜单 */
+.image-menu-main {
+  display: flex;
+  padding: 4px;
+  background: #262626;
+  border-radius: 8px 8px 0 0;
+  gap: 2px;
+}
+
+.image-menu-main .menu-item {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-menu-main .menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.image-menu-main .menu-item.active {
+  background: #1890ff;
+}
+
+.image-menu-main .menu-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.image-menu-main .menu-icon {
+  font-size: 16px;
+}
+
+/* 子菜单 */
+.image-submenu {
+  padding: 12px;
+  border-top: 1px solid #e8e8e8;
+}
+
+/* 对齐子菜单 */
+.alignment-submenu {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.alignment-submenu button {
+  padding: 6px 12px;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.alignment-submenu button:hover {
+  border-color: #40a9ff;
+}
+
+.alignment-submenu button.active {
+  border-color: #1890ff;
+  background: #e6f7ff;
+}
+
+/* 属性子菜单 */
+.attr-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attr-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.attr-row label {
+  font-size: 12px;
+  color: #595959;
+}
+
+.attr-row input {
+  padding: 8px 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.attr-row input:focus {
+  outline: none;
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 气泡菜单 */
+.wheelchair-image-bubble-menu {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  background: #262626;
+  border-radius: 6px;
+  gap: 2px;
+  z-index: 100;
+}
+
+.wheelchair-image-bubble-menu button {
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.wheelchair-image-bubble-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.wheelchair-image-bubble-menu button.active {
+  background: #1890ff;
+}
+
+.wheelchair-image-bubble-menu .divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 2px;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wheelchair-image-menu,
+.wheelchair-image-bubble-menu {
+  animation: fadeIn 0.2s ease;
+}

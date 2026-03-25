@@ -1,0 +1,202 @@
+/**
+ * WheelChair Editor - Light Theme
+ * 亮色主题变量定义
+ */
+
+:root,
+[data-theme="light"] {
+  /* ============================================
+     基础颜色变量 (Base Colors)
+     ============================================ */
+  
+  /* 背景色 */
+  --wc-bg: #ffffff;
+  --wc-bg-hover: #f3f4f6;
+  --wc-bg-active: #e5e7eb;
+  --wc-bg-subtle: #f9fafb;
+  --wc-bg-muted: #f3f4f6;
+  --wc-bg-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* 文本色 */
+  --wc-text: #111827;
+  --wc-text-secondary: #4b5563;
+  --wc-text-muted: #6b7280;
+  --wc-text-placeholder: #9ca3af;
+  --wc-text-inverse: #ffffff;
+  
+  /* 边框色 */
+  --wc-border: #e5e7eb;
+  --wc-border-hover: #d1d5db;
+  --wc-border-active: #9ca3af;
+  --wc-border-focus: #3b82f6;
+  
+  /* ============================================
+     品牌/强调色 (Accent Colors)
+     ============================================ */
+  
+  /* 主色调 - 蓝色 */
+  --wc-primary-50: #eff6ff;
+  --wc-primary-100: #dbeafe;
+  --wc-primary-200: #bfdbfe;
+  --wc-primary-300: #93c5fd;
+  --wc-primary-400: #60a5fa;
+  --wc-primary-500: #3b82f6;
+  --wc-primary-600: #2563eb;
+  --wc-primary-700: #1d4ed8;
+  --wc-primary-800: #1e40af;
+  --wc-primary-900: #1e3a8a;
+  
+  /* 危险/错误色 - 红色 */
+  --wc-danger-50: #fef2f2;
+  --wc-danger-100: #fee2e2;
+  --wc-danger-500: #ef4444;
+  --wc-danger-600: #dc2626;
+  --wc-danger-700: #b91c1c;
+  
+  /* 警告色 - 琥珀色 */
+  --wc-warning-50: #fffbeb;
+  --wc-warning-100: #fef3c7;
+  --wc-warning-500: #f59e0b;
+  --wc-warning-600: #d97706;
+  
+  /* 成功色 - 绿色 */
+  --wc-success-50: #f0fdf4;
+  --wc-success-100: #dcfce7;
+  --wc-success-500: #22c55e;
+  --wc-success-600: #16a34a;
+  
+  /* ============================================
+     间距变量 (Spacing)
+     ============================================ */
+  --wc-spacing-px: 1px;
+  --wc-spacing-0: 0;
+  --wc-spacing-0-5: 0.125rem;  /* 2px */
+  --wc-spacing-1: 0.25rem;     /* 4px */
+  --wc-spacing-1-5: 0.375rem;  /* 6px */
+  --wc-spacing-2: 0.5rem;      /* 8px */
+  --wc-spacing-2-5: 0.625rem;  /* 10px */
+  --wc-spacing-3: 0.75rem;     /* 12px */
+  --wc-spacing-3-5: 0.875rem;  /* 14px */
+  --wc-spacing-4: 1rem;        /* 16px */
+  --wc-spacing-5: 1.25rem;     /* 20px */
+  --wc-spacing-6: 1.5rem;      /* 24px */
+  --wc-spacing-8: 2rem;        /* 32px */
+  --wc-spacing-10: 2.5rem;     /* 40px */
+  --wc-spacing-12: 3rem;       /* 48px */
+  --wc-spacing-16: 4rem;       /* 64px */
+  --wc-spacing-20: 5rem;       /* 80px */
+  --wc-spacing-24: 6rem;       /* 96px */
+  
+  /* 别名 - 语义化间距 */
+  --wc-spacing-xs: var(--wc-spacing-1);
+  --wc-spacing-sm: var(--wc-spacing-2);
+  --wc-spacing-md: var(--wc-spacing-4);
+  --wc-spacing-lg: var(--wc-spacing-6);
+  --wc-spacing-xl: var(--wc-spacing-8);
+  --wc-spacing-2xl: var(--wc-spacing-12);
+  
+  /* ============================================
+     字体变量 (Typography)
+     ============================================ */
+  --wc-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --wc-font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --wc-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  
+  --wc-font-family: var(--wc-font-sans);
+  
+  /* 字号 */
+  --wc-font-size-xs: 0.75rem;    /* 12px */
+  --wc-font-size-sm: 0.875rem;   /* 14px */
+  --wc-font-size-base: 1rem;     /* 16px */
+  --wc-font-size-lg: 1.125rem;   /* 18px */
+  --wc-font-size-xl: 1.25rem;    /* 20px */
+  --wc-font-size-2xl: 1.5rem;    /* 24px */
+  --wc-font-size-3xl: 1.875rem;  /* 30px */
+  --wc-font-size-4xl: 2.25rem;   /* 36px */
+  --wc-font-size-5xl: 3rem;      /* 48px */
+  
+  /* 字重 */
+  --wc-font-weight-light: 300;
+  --wc-font-weight-normal: 400;
+  --wc-font-weight-medium: 500;
+  --wc-font-weight-semibold: 600;
+  --wc-font-weight-bold: 700;
+  
+  /* 行高 */
+  --wc-line-height-none: 1;
+  --wc-line-height-tight: 1.25;
+  --wc-line-height-snug: 1.375;
+  --wc-line-height-normal: 1.5;
+  --wc-line-height-relaxed: 1.625;
+  --wc-line-height-loose: 2;
+  
+  /* 字母间距 */
+  --wc-letter-spacing-tighter: -0.05em;
+  --wc-letter-spacing-tight: -0.025em;
+  --wc-letter-spacing-normal: 0;
+  --wc-letter-spacing-wide: 0.025em;
+  --wc-letter-spacing-wider: 0.05em;
+  
+  /* ============================================
+     圆角变量 (Border Radius)
+     ============================================ */
+  --wc-radius-none: 0;
+  --wc-radius-sm: 0.125rem;   /* 2px */
+  --wc-radius-base: 0.25rem;  /* 4px */
+  --wc-radius-md: 0.375rem;   /* 6px */
+  --wc-radius-lg: 0.5rem;     /* 8px */
+  --wc-radius-xl: 0.75rem;    /* 12px */
+  --wc-radius-2xl: 1rem;      /* 16px */
+  --wc-radius-3xl: 1.5rem;    /* 24px */
+  --wc-radius-full: 9999px;
+  
+  /* ============================================
+     阴影变量 (Shadows)
+     ============================================ */
+  --wc-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --wc-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --wc-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --wc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --wc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --wc-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --wc-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  --wc-shadow-none: none;
+  
+  /* ============================================
+     过渡/动画变量 (Transitions)
+     ============================================ */
+  --wc-transition-none: none;
+  --wc-transition-all: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --wc-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --wc-transition-opacity: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --wc-transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --wc-transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ============================================
+     Z-Index 层级
+     ============================================ */
+  --wc-z-base: 0;
+  --wc-z-dropdown: 100;
+  --wc-z-sticky: 200;
+  --wc-z-fixed: 300;
+  --wc-z-modal-backdrop: 400;
+  --wc-z-modal: 500;
+  --wc-z-popover: 600;
+  --wc-z-tooltip: 700;
+  --wc-z-toast: 800;
+  --wc-z-max: 9999;
+  
+  /* ============================================
+     编辑器特定变量
+     ============================================ */
+  --wc-editor-bg: var(--wc-bg);
+  --wc-editor-text: var(--wc-text);
+  --wc-editor-border: var(--wc-border);
+  --wc-editor-border-radius: var(--wc-radius-lg);
+  --wc-editor-padding: var(--wc-spacing-6);
+  --wc-editor-line-height: var(--wc-line-height-relaxed);
+  --wc-editor-focus-ring: 0 0 0 2px var(--wc-primary-200);
+  --wc-editor-selection-bg: var(--wc-primary-100);
+  --wc-editor-selection-color: var(--wc-text);
+  --wc-editor-placeholder-color: var(--wc-text-placeholder);
+}

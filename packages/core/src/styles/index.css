@@ -1,0 +1,86 @@
+/**
+ * WheelChair Editor - Styles Entry
+ * 
+ * 导入所有样式文件
+ * 
+ * @example
+ * ```css
+ * @import '@wheelchair/editor/styles';
+ * ```
+ */
+
+/* 主题变量 */
+@import './themes/light.css';
+@import './themes/dark.css';
+
+/* 核心编辑器样式 */
+@import './editor.css';
+
+/* 组件样式 */
+@import '../components/CodeBlock/code-block.css';
+@import '../components/TableMenu/table-menu.css';
+
+/* ============================================
+   可选：Tailwind CSS 指令
+   如果项目使用 Tailwind，需要确保这些指令
+   在主 CSS 文件中已包含
+   ============================================
+
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+
+*/
+
+/* ============================================
+   基础样式重置（可选）
+   ============================================ */
+
+.wheelchair-editor-reset {
+  /* 盒模型 */
+  box-sizing: border-box;
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+  
+  /* 清除默认边距 */
+  h1, h2, h3, h4, h5, h6,
+  p, blockquote, pre,
+  dl, dd, ol, ul,
+  figure, hr,
+  fieldset, legend {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* 列表样式重置 */
+  ol, ul {
+    list-style: none;
+  }
+  
+  /* 表单元素重置 */
+  button, input, optgroup, select, textarea {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+  }
+  
+  button, input {
+    overflow: visible;
+  }
+  
+  button, select {
+    text-transform: none;
+  }
+  
+  button,
+  [type="button"],
+  [type="reset"],
+  [type="submit"] {
+    -webkit-appearance: button;
+  }
+}

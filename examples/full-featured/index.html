@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WheelChair - 全功能示例</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --text-muted: #6b7280;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem; }
+    .actions { display: flex; gap: 0.5rem; }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: var(--bg); }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    main {
+      flex: 1;
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .editor-section {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .toolbar {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    .toolbar-group {
+      display: flex;
+      gap: 0.25rem;
+      padding: 0 0.5rem;
+      border-right: 1px solid var(--border);
+    }
+    .toolbar-group:last-child { border-right: none; }
+    .tool-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover { background: var(--border); }
+    .tool-btn.active { background: var(--primary); color: white; }
+    .tool-select {
+      height: 32px;
+      padding: 0 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      cursor: pointer;
+    }
+    #editor {
+      flex: 1;
+      padding: 2rem;
+      overflow: auto;
+    }
+    .sidebar {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .panel h3 {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    .stat-item {
+      background: var(--bg);
+      padding: 0.75rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .output-tabs {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .tab-btn {
+      padding: 0.375rem 0.75rem;
+      border: none;
+      background: var(--bg);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    .tab-btn.active { background: var(--primary); color: white; }
+    .output-content {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-size: 0.75rem;
+      font-family: monospace;
+      overflow: auto;
+      max-height: 200px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border);
+    }
+    /* 编辑器内容样式 */
+    .ProseMirror { outline: none; }
+    .ProseMirror p { margin-bottom: 0.75rem; }
+    .ProseMirror h1, .ProseMirror h2, .ProseMirror h3 { margin: 1.5rem 0 0.75rem; }
+    .ProseMirror ul, .ProseMirror ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+    .ProseMirror blockquote {
+      border-left: 4px solid var(--primary);
+      padding-left: 1rem;
+      margin: 1rem 0;
+      color: var(--text-muted);
+    }
+    .ProseMirror pre {
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    .ProseMirror code {
+      background: rgba(79, 70, 229, 0.1);
+      color: var(--primary);
+      padding: 0.125rem 0.375rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .ProseMirror pre code { background: none; color: inherit; padding: 0; }
+    .ProseMirror img { max-width: 100%; border-radius: 8px; }
+    .ProseMirror table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    .ProseMirror th, .ProseMirror td {
+      border: 1px solid var(--border);
+      padding: 0.5rem;
+      text-align: left;
+    }
+    .ProseMirror th { background: var(--bg); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">🦽 WheelChair 全功能演示</div>
+      <div class="actions">
+        <button class="btn" onclick="exportDoc('html')">导出 HTML</button>
+        <button class="btn" onclick="exportDoc('json')">导出 JSON</button>
+        <button class="btn" onclick="exportDoc('markdown')">导出 Markdown</button>
+        <button class="btn btn-primary" onclick="togglePreview()">预览</button>
+      </div>
+    </header>
+    
+    <main>
+      <div class="editor-section">
+        <div class="toolbar" id="toolbar">
+          <!-- 文本格式 -->
+          <div class="toolbar-group">
+            <button class="tool-btn" data-cmd="bold" title="粗体">𝐁</button>
+            <button class="tool-btn" data-cmd="italic" title="斜体">𝐼</button>
+            <button class="tool-btn" data-cmd="underline" title="下划线">𝐔</button>
+            <button class="tool-btn" data-cmd="strike" title="删除线">𝐒</button>
+            <button class="tool-btn" data-cmd="code" title="行内代码">&lt;/&gt;</button>
+          </div>
+          <!-- 标题 -->
+          <div class="toolbar-group">
+            <select class="tool-select" id="heading-select">
+              <option value="">正文</option>
+              <option value="1">标题 1</option>
+              <option value="2">标题 2</option>
+              <option value="3">标题 3</option>
+              <option value="4">标题 4</option>
+              <option value="5">标题 5</option>
+              <option value="6">标题 6</option>
+            </select>
+          </div>
+          <!-- 列表 -->
+          <div class="toolbar-group">
+            <button class="tool-btn" data-cmd="bulletList" title="无序列表">•</button>
+            <button class="tool-btn" data-cmd="orderedList" title="有序列表">1.</button>
+            <button class="tool-btn" data-cmd="taskList" title="任务列表">☑</button>
+          </div>
+          <!-- 插入 -->
+          <div class="toolbar-group">
+            <button class="tool-btn" data-cmd="blockquote" title="引用">"</button>
+            <button class="tool-btn" data-cmd="codeBlock" title="代码块">📄</button>
+            <button class="tool-btn" data-cmd="horizontalRule" title="分隔线">—</button>
+            <button class="tool-btn" data-cmd="hardBreak" title="换行">↵</button>
+          </div>
+          <!-- 颜色 -->
+          <div class="toolbar-group">
+            <input type="color" id="text-color" title="文字颜色" style="width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;">
+            <input type="color" id="bg-color" title="背景颜色" style="width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;">
+            <button class="tool-btn" data-cmd="clearNodes" title="清除格式">✕</button>
+          </div>
+        </div>
+        <div id="editor"></div>
+      </div>
+      
+      <aside class="sidebar">
+        <div class="panel">
+          <h3>📊 文档统计</h3>
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="stat-chars">0</div>
+              <div class="stat-label">字符</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-words">0</div>
+              <div class="stat-label">单词</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-lines">0</div>
+              <div class="stat-label">段落</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-readtime">0</div>
+              <div class="stat-label">阅读(分)</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <h3>🔧 输出预览</h3>
+          <div class="output-tabs">
+            <button class="tab-btn active" data-tab="html">HTML</button>
+            <button class="tab-btn" data-tab="json">JSON</button>
+            <button class="tab-btn" data-tab="text">Text</button>
+          </div>
+          <div class="output-content" id="output">点击编辑器开始输入...</div>
+        </div>
+        
+        <div class="panel">
+          <h3>🎨 当前样式</h3>
+          <div id="active-styles" style="font-size:0.875rem;color:var(--text-muted);">
+            无
+          </div>
+        </div>
+      </aside>
+    </main>
+    
+    <footer>
+      WheelChair 编辑器 - 全功能演示示例 | 所有扩展已启用
+    </footer>
+  </div>
+
+  <script type="module">
+    import { useWheelChairEditor } from '@wheelchair/core';
+    import '@wheelchair/core/styles';
+
+    // 初始内容
+    const initialContent = `
+      <h1>🎉 欢迎使用 WheelChair 全功能示例</h1>
+      <p>这是一个<strong>全功能</strong>的编辑器示例，展示了所有可用的扩展和功能。</p>
+      <h2>✨ 功能特性</h2>
+      <ul>
+        <li>📝 丰富的文本格式化</li>
+        <li>🎨 颜色和样式支持</li>
+        <li>📊 表格和列表</li>
+        <li>💻 代码块高亮</li>
+        <li>🔗 链接和引用</li>
+        <li>🖼️ 图片支持</li>
+      </ul>
+      <h2>🚀 开始使用</h2>
+      <p>尝试编辑这段文字，探索所有功能！</p>
+      <blockquote>
+        <p>WheelChair 让富文本编辑变得简单而强大。</p>
+      </blockquote>
+      <pre><code class="language-javascript">// 示例代码
+const editor = useWheelChairEditor({
+  content: '<p>Hello World!</p>',
+  extensions: ['all'], // 启用所有扩展
+});</code></pre>
+    `;
+
+    // 创建编辑器
+    const editor = useWheelChairEditor({
+      element: document.getElementById('editor'),
+      content: initialContent,
+      placeholder: '开始创作你的精彩内容...',
+      autofocus: true,
+      extensions: ['all'], // 启用所有扩展
+      onUpdate: ({ editor }) => {
+        updateStats();
+        updateOutput();
+        updateActiveStyles();
+      },
+      onSelectionUpdate: () => {
+        updateToolbar();
+        updateActiveStyles();
+      },
+    });
+
+    // 更新统计信息
+    function updateStats() {
+      const html = editor.getHTML();
+      const text = editor.getText();
+      const json = editor.getJSON();
+      
+      document.getElementById('stat-chars').textContent = text.length;
+      document.getElementById('stat-words').textContent = text.trim().split(/\s+/).filter(Boolean).length;
+      document.getElementById('stat-lines').textContent = json.content?.length || 0;
+      document.getElementById('stat-readtime').textContent = Math.ceil(text.length / 500);
+    }
+
+    // 更新输出预览
+    function updateOutput() {
+      const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab || 'html';
+      const output = document.getElementById('output');
+      
+      switch (activeTab) {
+        case 'html':
+          output.textContent = editor.getHTML();
+          break;
+        case 'json':
+          output.textContent = JSON.stringify(editor.getJSON(), null, 2);
+          break;
+        case 'text':
+          output.textContent = editor.getText();
+          break;
+      }
+    }
+
+    // 更新工具栏状态
+    function updateToolbar() {
+      document.querySelectorAll('.tool-btn[data-cmd]').forEach(btn => {
+        const cmd = btn.dataset.cmd;
+        btn.classList.toggle('active', editor.isActive(cmd));
+      });
+      
+      // 更新标题选择
+      const headingSelect = document.getElementById('heading-select');
+      let level = '';
+      for (let i = 1; i <= 6; i++) {
+        if (editor.isActive('heading', { level: i })) {
+          level = i.toString();
+          break;
+        }
+      }
+      headingSelect.value = level;
+    }
+
+    // 更新当前样式
+    function updateActiveStyles() {
+      const styles = [];
+      if (editor.isActive('bold')) styles.push('粗体');
+      if (editor.isActive('italic')) styles.push('斜体');
+      if (editor.isActive('underline')) styles.push('下划线');
+      if (editor.isActive('strike')) styles.push('删除线');
+      if (editor.isActive('code')) styles.push('代码');
+      if (editor.isActive('heading')) styles.push('标题');
+      if (editor.isActive('bulletList')) styles.push('无序列表');
+      if (editor.isActive('orderedList')) styles.push('有序列表');
+      if (editor.isActive('blockquote')) styles.push('引用');
+      if (editor.isActive('codeBlock')) styles.push('代码块');
+      
+      document.getElementById('active-styles').textContent = 
+        styles.length > 0 ? styles.join(', ') : '无';
+    }
+
+    // 工具栏按钮事件
+    document.querySelectorAll('.tool-btn[data-cmd]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cmd = btn.dataset.cmd;
+        const chain = editor.chain().focus();
+        
+        switch (cmd) {
+          case 'bold': chain.toggleBold(); break;
+          case 'italic': chain.toggleItalic(); break;
+          case 'underline': chain.toggleUnderline(); break;
+          case 'strike': chain.toggleStrike(); break;
+          case 'code': chain.toggleCode(); break;
+          case 'bulletList': chain.toggleBulletList(); break;
+          case 'orderedList': chain.toggleOrderedList(); break;
+          case 'taskList': chain.toggleTaskList(); break;
+          case 'blockquote': chain.toggleBlockquote(); break;
+          case 'codeBlock': chain.toggleCodeBlock(); break;
+          case 'horizontalRule': chain.setHorizontalRule(); break;
+          case 'hardBreak': chain.setHardBreak(); break;
+          case 'clearNodes': chain.clearNodes().unsetAllMarks(); break;
+        }
+        chain.run();
+      });
+    });
+
+    // 标题选择
+    document.getElementById('heading-select').addEventListener('change', (e) => {
+      const level = e.target.value;
+      const chain = editor.chain().focus();
+      if (level) {
+        chain.toggleHeading({ level: parseInt(level) }).run();
+      } else {
+        chain.setParagraph().run();
+      }
+    });
+
+    // 颜色选择
+    document.getElementById('text-color').addEventListener('input', (e) => {
+      editor.chain().focus().setColor(e.target.value).run();
+    });
+    document.getElementById('bg-color').addEventListener('input', (e) => {
+      editor.chain().focus().setHighlight({ color: e.target.value }).run();
+    });
+
+    // 标签切换
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateOutput();
+      });
+    });
+
+    // 导出功能
+    window.exportDoc = (format) => {
+      let content, filename, mimeType;
+      
+      switch (format) {
+        case 'html':
+          content = editor.getHTML();
+          filename = 'document.html';
+          mimeType = 'text/html';
+          break;
+        case 'json':
+          content = JSON.stringify(editor.getJSON(), null, 2);
+          filename = 'document.json';
+          mimeType = 'application/json';
+          break;
+        case 'markdown':
+          content = editor.getMarkdown?.() || editor.getText();
+          filename = 'document.md';
+          mimeType = 'text/markdown';
+          break;
+      }
+      
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    // 预览功能
+    window.togglePreview = () => {
+      const previewWindow = window.open('', '_blank');
+      previewWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>预览</title>
+          <style>
+            body { max-width: 800px; margin: 2rem auto; padding: 0 1rem; font-family: system-ui; line-height: 1.6; }
+            pre { background: #1f2937; color: #e5e7eb; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+            blockquote { border-left: 4px solid #4f46e5; padding-left: 1rem; color: #666; }
+            img { max-width: 100%; border-radius: 8px; }
+          </style>
+        </head>
+        <body>${editor.getHTML()}</body>
+        </html>
+      `);
+    };
+
+    // 初始化
+    updateStats();
+    updateOutput();
+    updateActiveStyles();
+  </script>
+</body>
+</html>

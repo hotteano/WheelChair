@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WheelChair - 自定义扩展示例</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 { margin-bottom: 0.5rem; }
+    .subtitle { color: #666; margin-bottom: 2rem; }
+    
+    .example-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .example-section h2 {
+      font-size: 1.125rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .example-section h2 span { font-size: 1.5rem; }
+    
+    /* 编辑器样式 */
+    .editor-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-height: 200px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .ProseMirror { outline: none; }
+    .ProseMirror p { margin-bottom: 0.75rem; }
+    
+    /* 工具栏 */
+    .toolbar {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .tool-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover { background: var(--bg); }
+    .tool-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    /* 自定义节点样式 */
+    .youtube-embed {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    .youtube-embed iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    .math-inline {
+      background: #f3f4f6;
+      padding: 0.125rem 0.375rem;
+      border-radius: 4px;
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+    }
+    
+    .emoji-node {
+      font-size: 1.5rem;
+      vertical-align: middle;
+    }
+    
+    .callout {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+    }
+    .callout.warning {
+      background: #fffbeb;
+      border-left-color: #f59e0b;
+    }
+    .callout.error {
+      background: #fef2f2;
+      border-left-color: #ef4444;
+    }
+    .callout.success {
+      background: #f0fdf4;
+      border-left-color: #22c55e;
+    }
+    .callout-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .callout-content {
+      flex: 1;
+    }
+    
+    /* 代码展示 */
+    pre {
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+    code { font-family: 'Fira Code', monospace; }
+    .code-block { margin: 1rem 0; }
+    
+    /* 提示框 */
+    .tip {
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .tip-title {
+      font-weight: 600;
+      color: #065f46;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛠️ 自定义扩展示例</h1>
+    <p class="subtitle">学习如何创建自定义节点、标记和工具栏组件</p>
+    
+    <!-- 示例1: 自定义节点 -->
+    <div class="example-section">
+      <h2><span>📺</span> 自定义节点：YouTube 嵌入</h2>
+      <p>创建一个可以嵌入 YouTube 视频的自定义节点。</p>
+      <div class="code-block">
+        <pre><code>// 1. 定义节点
+const YoutubeNode = Node.create({
+  name: 'youtube',
+  group: 'block',
+  atom: true,
+  
+  addAttributes() {
+    return {
+      src: { default: null },
+      width: { default: 640 },
+      height: { default: 360 },
+    };
+  },
+  
+  parseHTML() {
+    return [{ tag: 'div[data-youtube]' }];
+  },
+  
+  renderHTML({ HTMLAttributes }) {
+    return ['div', { 'data-youtube': '', ...HTMLAttributes }];
+  },
+  
+  addNodeView() {
+    return ({ node }) => {
+      const div = document.createElement('div');
+      div.className = 'youtube-embed';
+      div.innerHTML = \`<iframe src="\${node.attrs.src}" allowfullscreen></iframe>\`;
+      return { dom: div };
+    };
+  },
+});
+
+// 2. 添加命令
+addCommands() {
+  return {
+    setYoutube: (options) => ({ commands }) => {
+      return commands.insertContent({
+        type: 'youtube',
+        attrs: options,
+      });
+    },
+  };
+}</code></pre>
+      </div>
+      
+      <div class="toolbar">
+        <button class="tool-btn" onclick="insertYoutube()">📺 插入 YouTube</button>
+      </div>
+      <div class="editor-box" id="editor-youtube"></div>
+    </div>
+    
+    <!-- 示例2: 自定义标记 -->
+    <div class="example-section">
+      <h2><span>🧮</span> 自定义标记：数学公式</h2>
+      <p>创建一个用于显示数学公式的行内标记。</p>
+      <div class="code-block">
+        <pre><code>// 定义行内数学标记
+const MathInline = Mark.create({
+  name: 'mathInline',
+  
+  addAttributes() {
+    return {
+      formula: { default: '' },
+    };
+  },
+  
+  parseHTML() {
+    return [
+      {
+        tag: 'span[data-math]',
+        getAttrs: element => ({
+          formula: element.getAttribute('data-math'),
+        }),
+      },
+    ];
+  },
+  
+  renderHTML({ HTMLAttributes }) {
+    return ['span', {
+      'data-math': HTMLAttributes.formula,
+      class: 'math-inline',
+    }, HTMLAttributes.formula];
+  },
+  
+  addCommands() {
+    return {
+      setMathInline: (formula) => ({ commands }) => {
+        return commands.setMark('mathInline', { formula });
+      },
+      unsetMathInline: () => ({ commands }) => {
+        return commands.unsetMark('mathInline');
+      },
+    };
+  },
+});</code></pre>
+      </div>
+      
+      <div class="toolbar">
+        <button class="tool-btn" onclick="insertMath()">🧮 插入公式</button>
+      </div>
+      <div class="editor-box" id="editor-math"></div>
+    </div>
+    
+    <!-- 示例3: 自定义工具栏 -->
+    <div class="example-section">
+      <h2><span>🎨</span> 自定义工具栏组件</h2>
+      <p>创建可复用的自定义工具栏按钮和下拉菜单。</p>
+      <div class="code-block">
+        <pre><code>// Emoji 选择器组件
+function EmojiPicker({ onSelect }) {
+  const emojis = ['😀', '😂', '🥰', '😎', '🤔', '👍', '🔥', '💯'];
+  
+  return {
+    render() {
+      const div = document.createElement('div');
+      div.className = 'emoji-picker';
+      emojis.forEach(emoji => {
+        const btn = document.createElement('button');
+        btn.textContent = emoji;
+        btn.onclick = () => onSelect(emoji);
+        div.appendChild(btn);
+      });
+      return div;
+    }
+  };
+}
+
+// 颜色选择器组件
+function ColorPicker({ colors, onSelect }) {
+  return {
+    render() {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'color-picker';
+      
+      colors.forEach(color => {
+        const swatch = document.createElement('button');
+        swatch.className = 'color-swatch';
+        swatch.style.backgroundColor = color;
+        swatch.onclick = () => onSelect(color);
+        wrapper.appendChild(swatch);
+      });
+      
+      return wrapper;
+    }
+  };
+}</code></pre>
+      </div>
+      
+      <div class="toolbar" id="custom-toolbar">
+        <button class="tool-btn" onclick="showEmojiPicker()">😀 Emoji</button>
+        <button class="tool-btn" onclick="showColorPicker()">🎨 颜色</button>
+        <button class="tool-btn" onclick="insertCallout('info')">ℹ️ 提示框</button>
+        <button class="tool-btn" onclick="insertCallout('warning')">⚠️ 警告</button>
+      </div>
+      <div class="editor-box" id="editor-custom"></div>
+    </div>
+    
+    <!-- 示例4: 完整集成 -->
+    <div class="example-section">
+      <h2><span>🚀</span> 完整集成示例</h2>
+      <p>将所有自定义扩展集成到一个编辑器中。</p>
+      
+      <div class="tip">
+        <div class="tip-title">💡 提示</div>
+        <div>这是一个功能完整的编辑器，包含所有自定义扩展！</div>
+      </div>
+      
+      <div class="toolbar">
+        <button class="tool-btn" onclick="fullEditor.chain().focus().toggleBold().run()">𝐁</button>
+        <button class="tool-btn" onclick="fullEditor.chain().focus().toggleItalic().run()">𝐼</button>
+        <span style="width:1px;background:var(--border);margin:0 0.5rem;"></span>
+        <button class="tool-btn" onclick="insertYoutubeFull()">📺 YouTube</button>
+        <button class="tool-btn" onclick="insertMathFull()">🧮 公式</button>
+        <button class="tool-btn" onclick="showEmojiPickerFull()">😀 Emoji</button>
+        <span style="width:1px;background:var(--border);margin:0 0.5rem;"></span>
+        <button class="tool-btn" onclick="insertCalloutFull('info')">ℹ️ 提示</button>
+        <button class="tool-btn" onclick="insertCalloutFull('warning')">⚠️ 警告</button>
+        <button class="tool-btn" onclick="insertCalloutFull('success')">✅ 成功</button>
+      </div>
+      <div class="editor-box" id="editor-full"></div>
+    </div>
+    
+    <!-- 扩展开发指南 -->
+    <div class="example-section">
+      <h2><span>📚</span> 扩展开发指南</h2>
+      <div class="code-block">
+        <pre><code>// 扩展开发最佳实践
+
+// 1. 命名规范
+// - 节点使用 PascalCase: YoutubeNode, CalloutNode
+// - 标记使用 camelCase: mathInline, textColor
+// - 命令使用 camelCase: setYoutube, toggleCallout
+
+// 2. 属性定义
+addAttributes() {
+  return {
+    // 使用 default 指定默认值
+    src: {
+      default: null,
+      // 使用 parseHTML 从 HTML 解析
+      parseHTML: element => element.getAttribute('src'),
+      // 使用 renderHTML 渲染到 HTML
+      renderHTML: attributes => ({ src: attributes.src }),
+    },
+  };
+}
+
+// 3. 输入规则（自动转换）
+addInputRules() {
+  return [
+    // 输入 :emoji: 自动转换
+    nodeInputRule({
+      find: /:([a-z]+):$/,
+      type: this.type,
+      getAttributes: match => ({ emoji: match[1] }),
+    }),
+  ];
+}
+
+// 4. 粘贴规则
+addPasteRules() {
+  return [
+    nodePasteRule({
+      find: /https:\/\/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/g,
+      type: this.type,
+      getAttributes: match => ({ 
+        src: `https://www.youtube.com/embed/${match[1]}` 
+      }),
+    }),
+  ];
+}
+
+// 5. ProseMirror 插件
+addProseMirrorPlugins() {
+  return [
+    new Plugin({
+      props: {
+        handleKeyDown(view, event) {
+          // 自定义键盘处理
+          return false;
+        },
+      },
+    }),
+  ];
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { useWheelChairEditor, Node, Mark } from '@wheelchair/core';
+    import '@wheelchair/core/styles';
+
+    // ========== 1. YouTube 节点 ==========
+    const YoutubeNode = Node.create({
+      name: 'youtube',
+      group: 'block',
+      atom: true,
+      
+      addAttributes() {
+        return {
+          src: { default: null },
+        };
+      },
+      
+      parseHTML() {
+        return [{ tag: 'div[data-youtube]' }];
+      },
+      
+      renderHTML({ HTMLAttributes }) {
+        return ['div', { 'data-youtube': '' }, ['iframe', {
+          src: HTMLAttributes.src,
+          width: '100%',
+          height: '360',
+          frameborder: '0',
+          allowfullscreen: 'true',
+        }]];
+      },
+      
+      addNodeView() {
+        return ({ node }) => {
+          const div = document.createElement('div');
+          div.className = 'youtube-embed';
+          if (node.attrs.src) {
+            div.innerHTML = `<iframe src="${node.attrs.src}" allowfullscreen></iframe>`;
+          } else {
+            div.innerHTML = '<div style="padding:2rem;text-align:center;color:#666;">📺 YouTube 视频</div>';
+          }
+          return { dom: div };
+        };
+      },
+      
+      addCommands() {
+        return {
+          setYoutube: (src) => ({ commands }) => {
+            return commands.insertContent({
+              type: 'youtube',
+              attrs: { src },
+            });
+          },
+        };
+      },
+    });
+
+    // ========== 2. 数学公式标记 ==========
+    const MathInline = Mark.create({
+      name: 'mathInline',
+      
+      addAttributes() {
+        return {
+          formula: { default: '' },
+        };
+      },
+      
+      parseHTML() {
+        return [{ tag: 'span[data-math]' }];
+      },
+      
+      renderHTML({ HTMLAttributes }) {
+        return ['span', {
+          'data-math': HTMLAttributes.formula,
+          class: 'math-inline',
+        }, 0];
+      },
+      
+      addCommands() {
+        return {
+          setMathInline: (formula) => ({ commands }) => {
+            return commands.setMark('mathInline', { formula });
+          },
+          unsetMathInline: () => ({ commands }) => {
+            return commands.unsetMark('mathInline');
+          },
+        };
+      },
+    });
+
+    // ========== 3. Emoji 节点 ==========
+    const EmojiNode = Node.create({
+      name: 'emoji',
+      group: 'inline',
+      inline: true,
+      atom: true,
+      
+      addAttributes() {
+        return {
+          emoji: { default: '😀' },
+        };
+      },
+      
+      parseHTML() {
+        return [{ tag: 'span[data-emoji]' }];
+      },
+      
+      renderHTML({ HTMLAttributes }) {
+        return ['span', {
+          'data-emoji': HTMLAttributes.emoji,
+          class: 'emoji-node',
+        }, HTMLAttributes.emoji];
+      },
+      
+      addNodeView() {
+        return ({ node }) => {
+          const span = document.createElement('span');
+          span.className = 'emoji-node';
+          span.textContent = node.attrs.emoji;
+          return { dom: span };
+        };
+      },
+      
+      addCommands() {
+        return {
+          insertEmoji: (emoji) => ({ commands }) => {
+            return commands.insertContent({
+              type: 'emoji',
+              attrs: { emoji },
+            });
+          },
+        };
+      },
+    });
+
+    // ========== 4. Callout 节点 ==========
+    const CalloutNode = Node.create({
+      name: 'callout',
+      group: 'block',
+      content: 'block+',
+      
+      addAttributes() {
+        return {
+          type: { default: 'info' },
+          icon: { default: 'ℹ️' },
+        };
+      },
+      
+      parseHTML() {
+        return [{ tag: 'div[data-callout]' }];
+      },
+      
+      renderHTML({ HTMLAttributes }) {
+        return ['div', {
+          'data-callout': HTMLAttributes.type,
+          class: `callout ${HTMLAttributes.type}`,
+        }, 0];
+      },
+      
+      addNodeView() {
+        return ({ node, HTMLAttributes }) => {
+          const icons = {
+            info: 'ℹ️',
+            warning: '⚠️',
+            error: '❌',
+            success: '✅',
+          };
+          
+          const div = document.createElement('div');
+          div.className = `callout ${node.attrs.type}`;
+          
+          const iconDiv = document.createElement('div');
+          iconDiv.className = 'callout-icon';
+          iconDiv.textContent = icons[node.attrs.type] || 'ℹ️';
+          
+          const contentDiv = document.createElement('div');
+          contentDiv.className = 'callout-content';
+          
+          div.appendChild(iconDiv);
+          div.appendChild(contentDiv);
+          
+          return {
+            dom: div,
+            contentDOM: contentDiv,
+          };
+        };
+      },
+      
+      addCommands() {
+        return {
+          insertCallout: (type = 'info') => ({ commands }) => {
+            return commands.insertContent({
+              type: 'callout',
+              attrs: { type },
+              content: [{ type: 'paragraph' }],
+            });
+          },
+        };
+      },
+    });
+
+    // ========== 创建编辑器实例 ==========
+    
+    // YouTube 编辑器
+    const youtubeEditor = useWheelChairEditor({
+      element: document.getElementById('editor-youtube'),
+      content: '<p>点击下方按钮插入 YouTube 视频</p>',
+      extensions: [YoutubeNode],
+    });
+
+    // 数学公式编辑器
+    const mathEditor = useWheelChairEditor({
+      element: document.getElementById('editor-math'),
+      content: '<p>E = mc² 是著名的质能方程</p>',
+      extensions: [MathInline],
+    });
+
+    // 自定义工具栏编辑器
+    const customEditor = useWheelChairEditor({
+      element: document.getElementById('editor-custom'),
+      content: '<p>试试自定义工具栏按钮！</p>',
+      extensions: [EmojiNode, CalloutNode],
+    });
+
+    // 完整编辑器
+    const fullEditor = useWheelChairEditor({
+      element: document.getElementById('editor-full'),
+      content: `
+        <h2>🚀 完整功能演示</h2>
+        <p>这个编辑器集成了所有自定义扩展：</p>
+        <ul>
+          <li>📺 YouTube 视频嵌入</li>
+          <li>🧮 数学公式支持</li>
+          <li>😀 Emoji 表情</li>
+          <li>ℹ️ 提示框组件</li>
+        </ul>
+        <p>开始探索吧！</p>
+      `,
+      extensions: [YoutubeNode, MathInline, EmojiNode, CalloutNode],
+    });
+
+    // ========== 全局函数 ==========
+    
+    window.insertYoutube = () => {
+      const url = prompt('输入 YouTube 视频链接：', 'https://www.youtube.com/embed/dQw4w9WgXcQ');
+      if (url) {
+        youtubeEditor.chain().focus().setYoutube(url).run();
+      }
+    };
+
+    window.insertMath = () => {
+      const formula = prompt('输入数学公式：', 'E = mc²');
+      if (formula) {
+        mathEditor.chain().focus().setMathInline(formula).run();
+      }
+    };
+
+    window.showEmojiPicker = () => {
+      const emojis = ['😀', '😂', '🥰', '😎', '🤔', '👍', '🔥', '💯', '⭐', '🎉'];
+      const emoji = prompt('选择 Emoji：' + emojis.join(' '), '😀');
+      if (emoji) {
+        customEditor.chain().focus().insertEmoji(emoji).run();
+      }
+    };
+
+    window.showColorPicker = () => {
+      const color = prompt('输入颜色值（如 #ff0000）：', '#4f46e5');
+      if (color) {
+        customEditor.chain().focus().setColor(color).run();
+      }
+    };
+
+    window.insertCallout = (type) => {
+      customEditor.chain().focus().insertCallout(type).run();
+    };
+
+    // 完整编辑器函数
+    window.insertYoutubeFull = () => {
+      const url = prompt('输入 YouTube 视频链接：', 'https://www.youtube.com/embed/dQw4w9WgXcQ');
+      if (url) {
+        fullEditor.chain().focus().setYoutube(url).run();
+      }
+    };
+
+    window.insertMathFull = () => {
+      const formula = prompt('输入数学公式：', 'x = {-b ± √(b²-4ac)} / 2a');
+      if (formula) {
+        fullEditor.chain().focus().setMathInline(formula).run();
+      }
+    };
+
+    window.showEmojiPickerFull = () => {
+      const emoji = prompt('输入 Emoji：', '🚀');
+      if (emoji) {
+        fullEditor.chain().focus().insertEmoji(emoji).run();
+      }
+    };
+
+    window.insertCalloutFull = (type) => {
+      fullEditor.chain().focus().insertCallout(type).run();
+    };
+
+    // 导出供全局使用
+    window.fullEditor = fullEditor;
+  </script>
+</body>
+</html>

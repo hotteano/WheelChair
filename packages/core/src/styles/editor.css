@@ -1,0 +1,781 @@
+/**
+ * WheelChair Editor - Core Styles
+ * 编辑器核心样式定义
+ * 
+ * 使用 Tailwind CSS 类名规范
+ * 支持 CSS 变量主题切换
+ */
+
+/* ============================================
+   导入主题变量
+   ============================================ */
+@import './themes/light.css';
+@import './themes/dark.css';
+
+/* ============================================
+   编辑器容器 (Editor Container)
+   ============================================ */
+
+.wheelchair-editor {
+  /* 基础布局 */
+  @apply relative flex flex-col;
+  
+  /* 尺寸 */
+  @apply w-full min-h-[200px];
+  
+  /* 背景与边框 */
+  background-color: var(--wc-editor-bg);
+  color: var(--wc-editor-text);
+  border: 1px solid var(--wc-editor-border);
+  border-radius: var(--wc-editor-border-radius);
+  
+  /* 字体 */
+  font-family: var(--wc-font-family);
+  font-size: var(--wc-font-size-base);
+  line-height: var(--wc-editor-line-height);
+  
+  /* 过渡效果 */
+  transition: var(--wc-transition-colors);
+  
+  /* 防止编辑器外边框被选中 */
+  user-select: none;
+  
+  /* 聚焦状态 */
+  &:focus-within {
+    box-shadow: var(--wc-editor-focus-ring);
+    border-color: var(--wc-primary-500);
+  }
+  
+  /* 禁用状态 */
+  &.is-disabled {
+    @apply opacity-50 cursor-not-allowed;
+    
+    .ProseMirror {
+      pointer-events: none;
+    }
+  }
+  
+  /* 只读状态 */
+  &.is-readonly {
+    .ProseMirror {
+      cursor: default;
+    }
+  }
+  
+  /* 全屏模式 */
+  &.is-fullscreen {
+    @apply fixed inset-0 z-50 min-h-screen rounded-none;
+  }
+}
+
+/* ============================================
+   ProseMirror 编辑器内容区域
+   ============================================ */
+
+.wheelchair-editor .ProseMirror {
+  /* 基础布局 */
+  @apply relative flex-1;
+  
+  /* 尺寸与间距 */
+  @apply w-full min-h-full;
+  padding: var(--wc-editor-padding);
+  
+  /* 文本 */
+  @apply outline-none whitespace-pre-wrap;
+  word-break: break-word;
+  
+  /* 滚动 */
+  @apply overflow-auto;
+  
+  /* 选区样式 */
+  &::selection {
+    background-color: var(--wc-editor-selection-bg);
+    color: var(--wc-editor-selection-color);
+  }
+  
+  /* 焦点状态 */
+  &:focus {
+    @apply outline-none;
+  }
+  
+  /* ============================================
+     基础元素样式 (Basic Elements)
+     ============================================ */
+  
+  /* 段落 */
+  p {
+    @apply my-0;
+    margin-bottom: var(--wc-spacing-4);
+    line-height: var(--wc-line-height-relaxed);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* 空段落 */
+    &.is-empty::before {
+      content: attr(data-placeholder);
+      color: var(--wc-editor-placeholder-color);
+      float: left;
+      height: 0;
+      pointer-events: none;
+    }
+  }
+  
+  /* 标题 */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold mt-6 mb-4;
+    color: var(--wc-text);
+    line-height: var(--wc-line-height-tight);
+    letter-spacing: var(--wc-letter-spacing-tight);
+  }
+  
+  h1 {
+    font-size: var(--wc-font-size-3xl);
+    margin-top: var(--wc-spacing-8);
+  }
+  
+  h2 {
+    font-size: var(--wc-font-size-2xl);
+    margin-top: var(--wc-spacing-6);
+  }
+  
+  h3 {
+    font-size: var(--wc-font-size-xl);
+    margin-top: var(--wc-spacing-5);
+  }
+  
+  h4 {
+    font-size: var(--wc-font-size-lg);
+    margin-top: var(--wc-spacing-4);
+  }
+  
+  h5 {
+    font-size: var(--wc-font-size-base);
+    margin-top: var(--wc-spacing-4);
+  }
+  
+  h6 {
+    font-size: var(--wc-font-size-sm);
+    margin-top: var(--wc-spacing-4);
+    color: var(--wc-text-secondary);
+  }
+  
+  /* 链接 */
+  a {
+    color: var(--wc-primary-600);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: var(--wc-transition-colors);
+    cursor: pointer;
+    
+    &:hover {
+      color: var(--wc-primary-700);
+    }
+  }
+  
+  /* 粗体 */
+  strong, b {
+    font-weight: var(--wc-font-weight-bold);
+  }
+  
+  /* 斜体 */
+  em, i {
+    font-style: italic;
+  }
+  
+  /* 删除线 */
+  s, strike, del {
+    text-decoration: line-through;
+  }
+  
+  /* 代码行内 */
+  code {
+    @apply px-1.5 py-0.5 rounded;
+    font-family: var(--wc-font-mono);
+    font-size: 0.875em;
+    background-color: var(--wc-bg-muted);
+    color: var(--wc-danger-600);
+  }
+  
+  /* 代码块 */
+  pre {
+    @apply my-4 p-4 rounded-lg overflow-x-auto;
+    background-color: var(--wc-bg-subtle);
+    border: 1px solid var(--wc-border);
+    
+    code {
+      @apply p-0 bg-transparent text-inherit;
+      font-size: var(--wc-font-size-sm);
+    }
+  }
+  
+  /* 引用块 */
+  blockquote {
+    @apply my-4 pl-4 py-2;
+    border-left: 4px solid var(--wc-primary-500);
+    background-color: var(--wc-bg-subtle);
+    border-radius: 0 var(--wc-radius-md) var(--wc-radius-md) 0;
+    
+    p {
+      margin-bottom: var(--wc-spacing-2);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  /* 水平线 */
+  hr {
+    @apply my-6 border-0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--wc-border), transparent);
+  }
+  
+  /* 列表 */
+  ul, ol {
+    @apply my-4 pl-6;
+    
+    li {
+      @apply my-1;
+      
+      p {
+        margin-bottom: var(--wc-spacing-1);
+      }
+      
+      > ul, > ol {
+        @apply my-1;
+      }
+    }
+  }
+  
+  ul {
+    list-style-type: disc;
+    
+    ul {
+      list-style-type: circle;
+      
+      ul {
+        list-style-type: square;
+      }
+    }
+  }
+  
+  ol {
+    list-style-type: decimal;
+  }
+  
+  /* 任务列表 */
+  ul[data-type="taskList"] {
+    @apply list-none pl-0;
+    
+    li {
+      @apply flex items-start gap-2;
+      
+      > label {
+        @apply flex-shrink-0 mt-1;
+        
+        input[type="checkbox"] {
+          @apply w-4 h-4 cursor-pointer;
+        }
+      }
+      
+      > div {
+        @apply flex-1;
+      }
+      
+      &[data-checked="true"] > div {
+        @apply line-through opacity-60;
+      }
+    }
+  }
+  
+  /* 图片 */
+  img {
+    @apply max-w-full h-auto my-4 rounded-lg;
+    display: inline-block;
+    
+    &.ProseMirror-selectednode {
+      @apply outline outline-2 outline-offset-2;
+      outline-color: var(--wc-primary-500);
+    }
+  }
+  
+  /* 表格 */
+  table {
+    @apply w-full my-4 border-collapse;
+    border-spacing: 0;
+    
+    td, th {
+      @apply p-2 border;
+      border-color: var(--wc-border);
+      min-width: 100px;
+    }
+    
+    th {
+      @apply font-semibold text-left;
+      background-color: var(--wc-bg-subtle);
+    }
+    
+    tr:nth-child(even) {
+      background-color: var(--wc-bg-subtle);
+    }
+    
+    .selectedCell {
+      background-color: var(--wc-primary-100);
+    }
+  }
+  
+  /* 高亮/标记 */
+  mark {
+    @apply px-0.5 rounded;
+    background-color: rgba(250, 204, 21, 0.4);
+  }
+  
+  /* 下标和上标 */
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  
+  sup { top: -0.5em; }
+  sub { bottom: -0.25em; }
+  
+  /* ============================================
+     编辑器状态样式 (Editor States)
+     ============================================ */
+  
+  .ProseMirror-drop-target {
+    @apply absolute pointer-events-none;
+    background-color: var(--wc-primary-500);
+    height: 2px;
+    width: 100%;
+  }
+  
+  .ProseMirror-gapcursor {
+    @apply hidden pointer-events-none absolute;
+    
+    &:after {
+      content: "";
+      @apply block absolute -top-2;
+      border-top: 1px solid var(--wc-text);
+      border-left: 1px solid var(--wc-text);
+      width: 8px;
+      height: 16px;
+      animation: ProseMirror-cursor-blink 1s steps(1) infinite;
+    }
+  }
+  
+  &.ProseMirror-focused .ProseMirror-gapcursor {
+    @apply block;
+  }
+  
+  .ProseMirror-selectednode {
+    @apply outline outline-2 outline-offset-2;
+    outline-color: var(--wc-primary-500);
+  }
+}
+
+/* ============================================
+   动画定义
+   ============================================ */
+
+@keyframes ProseMirror-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ============================================
+   工具栏样式 (Toolbar Styles)
+   ============================================ */
+
+.wheelchair-toolbar {
+  @apply flex items-center gap-1;
+  @apply px-3 py-2;
+  background-color: var(--wc-bg-subtle);
+  border-bottom: 1px solid var(--wc-border);
+  border-radius: var(--wc-editor-border-radius) var(--wc-editor-border-radius) 0 0;
+  
+  .toolbar-group {
+    @apply flex items-center gap-0.5 px-2 py-1;
+    border-right: 1px solid var(--wc-border);
+    
+    &:last-child {
+      @apply border-r-0 pr-0;
+    }
+    
+    &:first-child {
+      @apply pl-0;
+    }
+  }
+}
+
+/* ============================================
+   工具栏按钮样式 (Toolbar Button)
+   ============================================ */
+
+.wheelchair-toolbar-btn {
+  @apply relative inline-flex items-center justify-center;
+  @apply w-8 h-8 p-1.5 rounded-md;
+  @apply transition-all duration-150;
+  
+  color: var(--wc-text-secondary);
+  background-color: transparent;
+  border: 1px solid transparent;
+  
+  svg, .icon {
+    @apply w-4 h-4;
+  }
+  
+  &:hover:not(:disabled) {
+    color: var(--wc-text);
+    background-color: var(--wc-bg-hover);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: var(--wc-bg-active);
+    transform: scale(0.95);
+  }
+  
+  &.is-active {
+    color: var(--wc-primary-600);
+    background-color: var(--wc-primary-50);
+    border-color: var(--wc-primary-200);
+  }
+  
+  &:disabled {
+    @apply opacity-40 cursor-not-allowed;
+  }
+  
+  &.has-dropdown {
+    @apply pr-1;
+    
+    &:after {
+      content: "";
+      @apply absolute right-0.5 bottom-0.5;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 3px solid currentColor;
+      width: 0;
+      height: 0;
+    }
+  }
+  
+  &.size-sm {
+    @apply w-7 h-7 p-1;
+    
+    svg, .icon { @apply w-3.5 h-3.5; }
+  }
+  
+  &.size-lg {
+    @apply w-9 h-9 p-2;
+    
+    svg, .icon { @apply w-5 h-5; }
+  }
+}
+
+/* ============================================
+   下拉菜单样式 (Dropdown Menu)
+   ============================================ */
+
+.wheelchair-dropdown {
+  @apply relative inline-block;
+  
+  .dropdown-trigger {
+    @apply inline-flex items-center gap-1;
+  }
+  
+  .dropdown-menu {
+    @apply absolute z-50 min-w-[160px] py-1;
+    @apply rounded-lg shadow-lg;
+    background-color: var(--wc-bg);
+    border: 1px solid var(--wc-border);
+    box-shadow: var(--wc-shadow-lg);
+    
+    /* 动画 */
+    animation: dropdown-in 100ms ease-out;
+    
+    &[data-state="closed"] {
+      animation: dropdown-out 75ms ease-in;
+    }
+    
+    /* 位置变体 */
+    &.position-top {
+      @apply bottom-full mb-1;
+    }
+    
+    &.position-bottom {
+      @apply top-full mt-1;
+    }
+    
+    &.position-left {
+      @apply right-full mr-1;
+    }
+    
+    &.position-right {
+      @apply left-full ml-1;
+    }
+  }
+  
+  .dropdown-item {
+    @apply flex items-center gap-2 px-3 py-2 text-sm cursor-pointer;
+    color: var(--wc-text);
+    transition: var(--wc-transition-colors);
+    
+    &:hover {
+      background-color: var(--wc-bg-hover);
+    }
+    
+    &.is-active {
+      color: var(--wc-primary-600);
+      background-color: var(--wc-primary-50);
+    }
+    
+    &.is-disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+    
+    .item-icon {
+      @apply w-4 h-4 flex-shrink-0;
+    }
+    
+    .item-label {
+      @apply flex-1;
+    }
+    
+    .item-shortcut {
+      @apply text-xs opacity-60;
+      font-family: var(--wc-font-mono);
+    }
+  }
+  
+  .dropdown-divider {
+    @apply my-1 mx-2 h-px;
+    background-color: var(--wc-border);
+  }
+  
+  .dropdown-header {
+    @apply px-3 py-1.5 text-xs font-medium;
+    color: var(--wc-text-muted);
+  }
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dropdown-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* ============================================
+   浮动菜单样式 (Floating Menu / Bubble Menu)
+   ============================================ */
+
+.wheelchair-floating-menu {
+  @apply absolute z-50 flex items-center gap-1;
+  @apply px-2 py-1.5 rounded-lg;
+  background-color: var(--wc-bg);
+  border: 1px solid var(--wc-border);
+  box-shadow: var(--wc-shadow-xl);
+  
+  /* 箭头 */
+  &:before {
+    content: "";
+    @apply absolute w-2 h-2;
+    background-color: var(--wc-bg);
+    border: 1px solid var(--wc-border);
+  }
+  
+  &.arrow-top:before {
+    @apply -top-1 left-1/2 -translate-x-1/2;
+    border-right: none;
+    border-bottom: none;
+    transform: translateX(-50%) rotate(45deg);
+  }
+  
+  &.arrow-bottom:before {
+    @apply -bottom-1 left-1/2 -translate-x-1/2;
+    border-left: none;
+    border-top: none;
+    transform: translateX(-50%) rotate(45deg);
+  }
+  
+  /* 动画 */
+  animation: floating-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  
+  &[data-state="hidden"] {
+    animation: floating-out 150ms ease-in forwards;
+  }
+  
+  .floating-menu-divider {
+    @apply w-px h-5 mx-1;
+    background-color: var(--wc-border);
+  }
+}
+
+@keyframes floating-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floating-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ============================================
+   气泡提示样式 (Tooltip)
+   ============================================ */
+
+.wheelchair-tooltip {
+  @apply absolute z-[700] px-2 py-1;
+  @apply text-xs rounded;
+  color: var(--wc-text-inverse);
+  background-color: var(--wc-text);
+  pointer-events: none;
+  white-space: nowrap;
+  
+  /* 动画 */
+  animation: tooltip-in 150ms ease-out;
+  
+  &[data-state="hidden"] {
+    animation: tooltip-out 100ms ease-in forwards;
+  }
+  
+  /* 箭头 */
+  &:after {
+    content: "";
+    @apply absolute w-0 h-0;
+  }
+  
+  &.position-top:after {
+    @apply -bottom-1 left-1/2 -translate-x-1/2;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid var(--wc-text);
+  }
+  
+  &.position-bottom:after {
+    @apply -top-1 left-1/2 -translate-x-1/2;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid var(--wc-text);
+  }
+  
+  &.position-left:after {
+    @apply top-1/2 -right-1 -translate-y-1/2;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid var(--wc-text);
+  }
+  
+  &.position-right:after {
+    @apply top-1/2 -left-1 -translate-y-1/2;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 4px solid var(--wc-text);
+  }
+}
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes tooltip-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.9); }
+}
+
+/* ============================================
+   颜色选择器样式 (Color Picker)
+   ============================================ */
+
+.wheelchair-color-picker {
+  @apply p-3;
+  
+  .color-section {
+    @apply mb-3;
+    
+    &:last-child {
+      @apply mb-0;
+    }
+  }
+  
+  .color-section-title {
+    @apply text-xs font-medium mb-2;
+    color: var(--wc-text-muted);
+  }
+  
+  .color-grid {
+    @apply grid grid-cols-8 gap-1;
+  }
+  
+  .color-item {
+    @apply w-6 h-6 rounded cursor-pointer;
+    @apply transition-transform duration-150;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      @apply scale-110;
+      box-shadow: var(--wc-shadow-md);
+    }
+    
+    &.is-active {
+      @apply ring-2 ring-offset-1;
+      ring-color: var(--wc-primary-500);
+    }
+  }
+  
+  .color-custom {
+    @apply flex items-center gap-2 mt-2 pt-2;
+    border-top: 1px solid var(--wc-border);
+    
+    input[type="color"] {
+      @apply w-8 h-8 p-0 border-0 rounded cursor-pointer;
+    }
+    
+    input[type="text"] {
+      @apply flex-1 px-2 py-1 text-sm rounded;
+      border: 1px solid var(--wc-border);
+      background-color: var(--wc-bg);
+      color: var(--wc-text);
+      
+      &:focus {
+        @apply outline-none;
+        border-color: var(--wc-primary-500);
+        box-shadow: 0 0 0 2px var(--wc-primary-100);
+      }
+    }
+  }
+}

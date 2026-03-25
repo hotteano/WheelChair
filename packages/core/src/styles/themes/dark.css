@@ -1,0 +1,121 @@
+/**
+ * WheelChair Editor - Dark Theme
+ * 暗色主题变量定义
+ */
+
+[data-theme="dark"] {
+  /* ============================================
+     基础颜色变量 (Base Colors)
+     ============================================ */
+  
+  /* 背景色 */
+  --wc-bg: #0f172a;
+  --wc-bg-hover: #1e293b;
+  --wc-bg-active: #334155;
+  --wc-bg-subtle: #1e293b;
+  --wc-bg-muted: #334155;
+  --wc-bg-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* 文本色 */
+  --wc-text: #f8fafc;
+  --wc-text-secondary: #cbd5e1;
+  --wc-text-muted: #94a3b8;
+  --wc-text-placeholder: #64748b;
+  --wc-text-inverse: #0f172a;
+  
+  /* 边框色 */
+  --wc-border: #334155;
+  --wc-border-hover: #475569;
+  --wc-border-active: #64748b;
+  --wc-border-focus: #60a5fa;
+  
+  /* ============================================
+     品牌/强调色 (Accent Colors)
+     ============================================ */
+  
+  /* 主色调 - 蓝色（暗色模式下稍微亮一点） */
+  --wc-primary-50: #1e3a8a;
+  --wc-primary-100: #1e40af;
+  --wc-primary-200: #1d4ed8;
+  --wc-primary-300: #2563eb;
+  --wc-primary-400: #3b82f6;
+  --wc-primary-500: #60a5fa;
+  --wc-primary-600: #93c5fd;
+  --wc-primary-700: #bfdbfe;
+  --wc-primary-800: #dbeafe;
+  --wc-primary-900: #eff6ff;
+  
+  /* 危险/错误色 - 红色 */
+  --wc-danger-50: #450a0a;
+  --wc-danger-100: #7f1d1d;
+  --wc-danger-500: #ef4444;
+  --wc-danger-600: #f87171;
+  --wc-danger-700: #fca5a5;
+  
+  /* 警告色 - 琥珀色 */
+  --wc-warning-50: #451a03;
+  --wc-warning-100: #78350f;
+  --wc-warning-500: #f59e0b;
+  --wc-warning-600: #fbbf24;
+  
+  /* 成功色 - 绿色 */
+  --wc-success-50: #052e16;
+  --wc-success-100: #14532d;
+  --wc-success-500: #22c55e;
+  --wc-success-600: #4ade80;
+  
+  /* ============================================
+     阴影变量（暗色模式下阴影更明显）
+     ============================================ */
+  --wc-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --wc-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --wc-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --wc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --wc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  --wc-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  --wc-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  
+  /* ============================================
+     编辑器特定变量（覆盖）
+     ============================================ */
+  --wc-editor-bg: var(--wc-bg);
+  --wc-editor-text: var(--wc-text);
+  --wc-editor-border: var(--wc-border);
+  --wc-editor-focus-ring: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  --wc-editor-selection-bg: rgba(59, 130, 246, 0.3);
+  --wc-editor-selection-color: var(--wc-text);
+}
+
+/* 暗色模式下的特殊调整 */
+[data-theme="dark"] .wheelchair-editor {
+  /* 链接颜色 */
+  --wc-link-color: var(--wc-primary-400);
+  --wc-link-hover: var(--wc-primary-300);
+  
+  /* 代码块背景 */
+  --wc-code-bg: #1e293b;
+  --wc-code-text: #e2e8f0;
+  
+  /* 引用块 */
+  --wc-blockquote-border: var(--wc-primary-400);
+  --wc-blockquote-bg: rgba(59, 130, 246, 0.1);
+  
+  /* 表格 */
+  --wc-table-header-bg: var(--wc-bg-hover);
+  --wc-table-row-alt-bg: rgba(30, 41, 59, 0.5);
+  
+  /* 高亮标记 */
+  --wc-highlight-bg: rgba(250, 204, 21, 0.3);
+  
+  /* 选中节点 */
+  --wc-node-selected-bg: rgba(59, 130, 246, 0.15);
+  --wc-node-selected-border: var(--wc-primary-400);
+}
+
+/* 系统暗色模式偏好检测 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* 自动应用暗色主题 */
+    --wc-auto-dark: 1;
+  }
+}

@@ -1,0 +1,427 @@
+/**
+ * ExportMenu Styles
+ */
+
+.export-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* 触发按钮 */
+.export-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-menu-trigger:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.export-menu-trigger:active {
+  background: #e5e7eb;
+}
+
+.export-menu-trigger[aria-expanded="true"] {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+.export-icon {
+  font-size: 16px;
+}
+
+/* 下拉菜单 */
+.export-menu-dropdown {
+  position: absolute;
+  z-index: 1000;
+  min-width: 320px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  animation: export-menu-slide-in 0.15s ease;
+}
+
+@keyframes export-menu-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 头部 */
+.export-menu-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.export-menu-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 列表 */
+.export-menu-list {
+  padding: 8px;
+}
+
+.export-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.export-menu-item:hover {
+  background: #f3f4f6;
+}
+
+.export-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.export-menu-button:hover {
+  background: #e5e7eb;
+}
+
+.export-menu-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.export-format-icon {
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+
+.export-format-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.export-format-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.export-format-desc {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* 操作按钮 */
+.export-menu-actions {
+  display: flex;
+  gap: 4px;
+  padding-right: 4px;
+}
+
+.export-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 14px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.15s ease;
+}
+
+.export-menu-item:hover .export-action-btn {
+  opacity: 1;
+}
+
+.export-action-btn:hover {
+  background: #d1d5db;
+}
+
+.export-action-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* 预览区域 */
+.export-preview {
+  border-top: 1px solid #e5e7eb;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.export-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: #f9fafb;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.export-preview-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #6b7280;
+  transition: all 0.15s ease;
+}
+
+.export-preview-close:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.export-preview-content {
+  margin: 0;
+  padding: 12px 16px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #374151;
+  background: #f9fafb;
+  overflow: auto;
+  max-height: 250px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* 选项区域 */
+.export-options {
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.export-option + .export-option {
+  margin-top: 8px;
+}
+
+.export-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Toast 提示 */
+.export-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 12px 24px;
+  font-size: 14px;
+  color: #ffffff;
+  background: #1f2937;
+  border-radius: 6px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+.export-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 加载状态 */
+.export-menu-container.loading .export-menu-button {
+  pointer-events: none;
+}
+
+.export-menu-container.loading .export-menu-button::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: export-menu-spin 0.8s linear infinite;
+}
+
+@keyframes export-menu-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 暗色主题支持 */
+@media (prefers-color-scheme: dark) {
+  .export-menu-trigger {
+    color: #e5e7eb;
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .export-menu-trigger:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+  }
+
+  .export-menu-trigger[aria-expanded="true"] {
+    background: #1e3a8a;
+    border-color: #3b82f6;
+    color: #60a5fa;
+  }
+
+  .export-menu-dropdown {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+
+  .export-menu-header {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .export-menu-header h4 {
+    color: #f9fafb;
+  }
+
+  .export-menu-item:hover {
+    background: #374151;
+  }
+
+  .export-menu-button:hover {
+    background: #4b5563;
+  }
+
+  .export-format-icon {
+    background: #374151;
+  }
+
+  .export-format-name {
+    color: #f9fafb;
+  }
+
+  .export-format-desc {
+    color: #9ca3af;
+  }
+
+  .export-action-btn:hover {
+    background: #4b5563;
+  }
+
+  .export-preview {
+    border-color: #374151;
+  }
+
+  .export-preview-header {
+    background: #111827;
+  }
+
+  .export-preview-content {
+    color: #d1d5db;
+    background: #111827;
+  }
+
+  .export-preview-close:hover {
+    background: #374151;
+    color: #e5e7eb;
+  }
+
+  .export-options {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .export-option {
+    color: #d1d5db;
+  }
+}
+
+/* 响应式 */
+@media (max-width: 480px) {
+  .export-menu-dropdown {
+    position: fixed;
+    top: auto !important;
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    margin: 0;
+    min-width: auto;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    animation: export-menu-slide-up 0.2s ease;
+  }
+
+  @keyframes export-menu-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .export-action-btn {
+    opacity: 1;
+  }
+}

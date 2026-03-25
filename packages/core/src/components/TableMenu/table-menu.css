@@ -1,0 +1,473 @@
+/**
+ * WheelChair Editor - Table Menu Styles
+ * 
+ * 表格菜单组件样式
+ */
+
+/* ============================================
+   表格菜单容器
+   ============================================ */
+
+.table-menu-container {
+  @apply relative inline-block;
+}
+
+.table-menu-trigger {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium;
+  @apply transition-all duration-150;
+  color: var(--wc-text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--wc-border);
+}
+
+.table-menu-trigger:hover {
+  color: var(--wc-text);
+  background-color: var(--wc-bg-hover);
+  border-color: var(--wc-border-hover);
+}
+
+.table-menu-trigger.is-active {
+  color: var(--wc-primary-600);
+  background-color: var(--wc-primary-50);
+  border-color: var(--wc-primary-200);
+}
+
+.table-menu-trigger svg {
+  @apply w-4 h-4;
+}
+
+.table-menu-trigger .dropdown-arrow {
+  @apply w-3 h-3 transition-transform duration-150;
+}
+
+.table-menu-trigger .dropdown-arrow.is-open {
+  transform: rotate(180deg);
+}
+
+/* ============================================
+   下拉菜单
+   ============================================ */
+
+.table-menu-dropdown {
+  @apply absolute top-full left-0 mt-1 z-50 min-w-[200px] rounded-lg overflow-hidden;
+  background-color: var(--wc-bg);
+  border: 1px solid var(--wc-border);
+  box-shadow: var(--wc-shadow-lg);
+  animation: table-menu-in 150ms ease-out;
+}
+
+@keyframes table-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 菜单头部 */
+
+.table-menu-header {
+  @apply px-3 py-2 text-xs font-medium;
+  color: var(--wc-text-muted);
+  background-color: var(--wc-bg-subtle);
+  border-bottom: 1px solid var(--wc-border);
+}
+
+/* 菜单列表 */
+
+.table-menu-list {
+  @apply py-1;
+}
+
+.table-menu-item {
+  @apply flex items-center gap-2 w-full px-3 py-2 text-sm text-left;
+  @apply transition-colors duration-100;
+  color: var(--wc-text);
+}
+
+.table-menu-item:hover:not(:disabled) {
+  background-color: var(--wc-bg-hover);
+}
+
+.table-menu-item.is-active {
+  color: var(--wc-primary-600);
+  background-color: var(--wc-primary-50);
+}
+
+.table-menu-item:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.table-menu-item-icon {
+  @apply w-4 h-4 flex-shrink-0;
+  color: var(--wc-text-secondary);
+}
+
+.table-menu-item:hover:not(:disabled) .table-menu-item-icon {
+  color: var(--wc-text);
+}
+
+.table-menu-item-title {
+  @apply flex-1;
+}
+
+.table-menu-item-shortcut {
+  @apply text-xs;
+  color: var(--wc-text-muted);
+  font-family: var(--wc-font-mono);
+}
+
+.table-menu-divider {
+  @apply my-1 mx-3 h-px;
+  background-color: var(--wc-border);
+}
+
+/* ============================================
+   子菜单
+   ============================================ */
+
+.table-submenu {
+  @apply mt-1 pt-1;
+  border-top: 1px solid var(--wc-border);
+}
+
+.table-submenu-header {
+  @apply px-3 py-1.5 text-xs font-medium;
+  color: var(--wc-text-muted);
+}
+
+/* 颜色网格 */
+
+.table-color-grid {
+  @apply grid grid-cols-4 gap-1 px-3 pb-2;
+}
+
+.table-color-option {
+  @apply w-8 h-8 rounded border;
+  border-color: var(--wc-border);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.table-color-option:hover {
+  transform: scale(1.1);
+  box-shadow: var(--wc-shadow-md);
+  border-color: var(--wc-primary-500);
+}
+
+.table-color-option svg {
+  @apply w-4 h-4 mx-auto;
+  color: var(--wc-text-muted);
+}
+
+/* ============================================
+   表格网格选择器
+   ============================================ */
+
+.table-grid {
+  @apply p-3;
+}
+
+.table-grid-container {
+  @apply inline-block;
+  background-color: var(--wc-bg-subtle);
+  border: 1px solid var(--wc-border);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.table-grid-row {
+  @apply flex;
+}
+
+.table-grid-cell {
+  @apply w-6 h-6 m-0.5 rounded-sm;
+  background-color: var(--wc-bg);
+  border: 1px solid var(--wc-border);
+  transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.table-grid-cell:hover {
+  background-color: var(--wc-bg-hover);
+  border-color: var(--wc-border-hover);
+}
+
+.table-grid-cell.hovered,
+.table-grid-cell.selected {
+  background-color: var(--wc-primary-500);
+  border-color: var(--wc-primary-600);
+}
+
+/* 尺寸信息 */
+
+.table-grid-info {
+  @apply mt-2 text-sm text-center;
+  color: var(--wc-text-secondary);
+}
+
+/* 自定义尺寸输入 */
+
+.table-grid-custom {
+  @apply flex items-center gap-2 mt-3 pt-3;
+  border-top: 1px solid var(--wc-border);
+}
+
+.table-grid-input-group {
+  @apply flex items-center gap-1;
+}
+
+.table-grid-input-group label {
+  @apply text-xs;
+  color: var(--wc-text-muted);
+}
+
+.table-grid-input {
+  @apply w-12 px-1.5 py-1 text-sm rounded;
+  background-color: var(--wc-bg);
+  border: 1px solid var(--wc-border);
+  color: var(--wc-text);
+}
+
+.table-grid-input:focus {
+  @apply outline-none;
+  border-color: var(--wc-primary-500);
+  box-shadow: 0 0 0 2px var(--wc-primary-100);
+}
+
+.table-grid-separator {
+  @apply text-sm;
+  color: var(--wc-text-muted);
+}
+
+.table-grid-confirm {
+  @apply ml-auto px-3 py-1 text-sm font-medium rounded;
+  color: var(--wc-primary-600);
+  background-color: var(--wc-primary-50);
+  border: 1px solid var(--wc-primary-200);
+  transition: all 0.15s ease;
+}
+
+.table-grid-confirm:hover:not(:disabled) {
+  background-color: var(--wc-primary-100);
+}
+
+.table-grid-confirm:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* ============================================
+   表格右键菜单
+   ============================================ */
+
+.table-context-menu {
+  @apply fixed z-50 min-w-[180px] rounded-lg overflow-hidden;
+  background-color: var(--wc-bg);
+  border: 1px solid var(--wc-border);
+  box-shadow: var(--wc-shadow-lg);
+  animation: context-menu-in 100ms ease-out;
+}
+
+@keyframes context-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.table-context-menu .context-menu-header {
+  @apply px-3 py-1.5 text-xs font-medium;
+  color: var(--wc-text-muted);
+  background-color: var(--wc-bg-subtle);
+  border-bottom: 1px solid var(--wc-border);
+}
+
+.table-context-menu .context-menu-item {
+  @apply flex items-center gap-2 w-full px-3 py-2 text-sm text-left;
+  @apply transition-colors duration-100;
+  color: var(--wc-text);
+}
+
+.table-context-menu .context-menu-item:hover {
+  background-color: var(--wc-bg-hover);
+}
+
+.table-context-menu .context-menu-item-icon {
+  @apply w-4 h-4 flex-shrink-0;
+  color: var(--wc-text-secondary);
+}
+
+.table-context-menu .context-menu-divider {
+  @apply my-1 h-px;
+  background-color: var(--wc-border);
+}
+
+/* ============================================
+   表格样式增强
+   ============================================ */
+
+/* 表格容器样式 */
+.wheelchair-editor .ProseMirror table {
+  @apply w-full my-4 border-collapse;
+  border-spacing: 0;
+}
+
+.wheelchair-editor .ProseMirror table td,
+.wheelchair-editor .ProseMirror table th {
+  @apply p-2 border min-w-[100px];
+  border-color: var(--wc-border);
+  transition: background-color 0.15s ease;
+}
+
+.wheelchair-editor .ProseMirror table th {
+  @apply font-semibold text-left;
+  background-color: var(--wc-bg-subtle);
+}
+
+.wheelchair-editor .ProseMirror table tr:nth-child(even) td:not([style*="background-color"]) {
+  background-color: var(--wc-bg-subtle);
+}
+
+/* 选中的单元格 */
+.wheelchair-editor .ProseMirror table .selectedCell,
+.wheelchair-editor .ProseMirror table td.selectedCell,
+.wheelchair-editor .ProseMirror table th.selectedCell {
+  background-color: var(--wc-primary-100) !important;
+  border-color: var(--wc-primary-500) !important;
+}
+
+/* 表格 hover 效果 */
+.wheelchair-editor .ProseMirror table tr:hover td:not([style*="background-color"]):not(.selectedCell) {
+  background-color: var(--wc-bg-hover);
+}
+
+/* 表头固定 (可选) */
+.wheelchair-editor .ProseMirror table thead,
+.wheelchair-editor .ProseMirror table tr:first-child:has(th) {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* ============================================
+   暗色主题适配
+   ============================================ */
+
+[data-theme="dark"] .table-menu-trigger {
+  border-color: #3c3c3c;
+  color: #cccccc;
+}
+
+[data-theme="dark"] .table-menu-trigger:hover {
+  background-color: #3c3c3c;
+  border-color: #4c4c4c;
+}
+
+[data-theme="dark"] .table-menu-trigger.is-active {
+  background-color: #094771;
+  border-color: #094771;
+  color: #fff;
+}
+
+[data-theme="dark"] .table-menu-dropdown {
+  background-color: #252526;
+  border-color: #3c3c3c;
+}
+
+[data-theme="dark"] .table-menu-header {
+  background-color: #1e1e1e;
+  border-color: #3c3c3c;
+}
+
+[data-theme="dark"] .table-menu-item:hover:not(:disabled) {
+  background-color: #3c3c3c;
+}
+
+[data-theme="dark"] .table-menu-item.is-active {
+  background-color: #094771;
+  color: #fff;
+}
+
+[data-theme="dark"] .table-grid-container {
+  background-color: #1e1e1e;
+  border-color: #3c3c3c;
+}
+
+[data-theme="dark"] .table-grid-cell {
+  background-color: #252526;
+  border-color: #3c3c3c;
+}
+
+[data-theme="dark"] .table-grid-cell.hovered,
+[data-theme="dark"] .table-grid-cell.selected {
+  background-color: #094771;
+  border-color: #1177bb;
+}
+
+[data-theme="dark"] .table-grid-input {
+  background-color: #3c3c3c;
+  border-color: #3c3c3c;
+  color: #cccccc;
+}
+
+[data-theme="dark"] .table-grid-confirm {
+  background-color: #094771;
+  border-color: #094771;
+  color: #fff;
+}
+
+[data-theme="dark"] .table-color-option {
+  border-color: #3c3c3c;
+}
+
+[data-theme="dark"] .wheelchair-editor .ProseMirror table {
+  border-color: #3c3c3c;
+}
+
+[data-theme="dark"] .wheelchair-editor .ProseMirror table td,
+[data-theme="dark"] .wheelchair-editor .ProseMirror table th {
+  border-color: #3c3c3c;
+}
+
+[data-theme="dark"] .wheelchair-editor .ProseMirror table th {
+  background-color: #252526;
+}
+
+[data-theme="dark"] .wheelchair-editor .ProseMirror table tr:nth-child(even) td:not([style*="background-color"]) {
+  background-color: #1e1e1e;
+}
+
+[data-theme="dark"] .wheelchair-editor .ProseMirror table tr:hover td:not([style*="background-color"]):not(.selectedCell) {
+  background-color: #2c2c2c;
+}
+
+[data-theme="dark"] .wheelchair-editor .ProseMirror table .selectedCell,
+[data-theme="dark"] .wheelchair-editor .ProseMirror table td.selectedCell,
+[data-theme="dark"] .wheelchair-editor .ProseMirror table th.selectedCell {
+  background-color: #094771 !important;
+}
+
+/* ============================================
+   响应式适配
+   ============================================ */
+
+@media (max-width: 640px) {
+  .table-menu-dropdown {
+    @apply left-auto right-0;
+    min-width: 180px;
+  }
+  
+  .table-grid-container {
+    @apply scale-90;
+    transform-origin: top left;
+  }
+  
+  .table-grid-custom {
+    @apply flex-wrap;
+  }
+}

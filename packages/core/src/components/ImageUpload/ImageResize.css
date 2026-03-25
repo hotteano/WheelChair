@@ -1,0 +1,175 @@
+/* ImageResize 组件样式 */
+
+.wheelchair-image-resize {
+  position: absolute;
+  pointer-events: none;
+}
+
+.wheelchair-image-resize.resizing {
+  user-select: none;
+}
+
+/* 尺寸信息 */
+.resize-info {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #262626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* 预设尺寸按钮 */
+.resize-presets {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  padding: 4px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.resize-presets button {
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #595959;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  pointer-events: auto;
+}
+
+.resize-presets button:hover {
+  background: #f5f5f5;
+  color: #262626;
+}
+
+/* 缩放手柄 */
+.resize-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border: 2px solid #1890ff;
+  border-radius: 50%;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.resize-handle:hover {
+  background: #1890ff;
+  transform: scale(1.2);
+}
+
+/* 角落手柄 */
+.resize-handle-nw {
+  top: -5px;
+  left: -5px;
+  cursor: nw-resize;
+}
+
+.resize-handle-ne {
+  top: -5px;
+  right: -5px;
+  cursor: ne-resize;
+}
+
+.resize-handle-sw {
+  bottom: -5px;
+  left: -5px;
+  cursor: sw-resize;
+}
+
+.resize-handle-se {
+  bottom: -5px;
+  right: -5px;
+  cursor: se-resize;
+}
+
+/* 边缘手柄 */
+.resize-handle-e {
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+  cursor: e-resize;
+}
+
+.resize-handle-s {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: s-resize;
+}
+
+/* 编辑器中的图片样式 */
+.wheelchair-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.wheelchair-image.loading {
+  opacity: 0.5;
+  background: #f0f0f0;
+}
+
+.wheelchair-image.error {
+  border: 2px solid #ff4d4f;
+}
+
+.wheelchair-image.resizable {
+  cursor: default;
+}
+
+.wheelchair-image.resizable:hover {
+  outline: 2px solid #1890ff;
+}
+
+/* 图片对齐样式 */
+.image-figure {
+  margin: 1em 0;
+}
+
+.image-figure.align-left {
+  text-align: left;
+}
+
+.image-figure.align-center {
+  text-align: center;
+}
+
+.image-figure.align-right {
+  text-align: right;
+}
+
+.image-figure img {
+  max-width: 100%;
+}
+
+.image-figure figcaption {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #595959;
+  text-align: center;
+}
+
+/* 选中状态 */
+.ProseMirror-selectednode .wheelchair-image {
+  outline: 2px solid #1890ff;
+}
+
+.ProseMirror-selectednode .wheelchair-image-resize {
+  display: block;
+}
