@@ -1,215 +1,414 @@
-import React, { useState, useCallback } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import Link from '@tiptap/extension-link';
+import Image from '@tiptap/extension-image';
+import Placeholder from '@tiptap/extension-placeholder';
 import { useTheme } from '@wheelchair/core/context/ThemeContext';
 import './App.css';
 
+// 图标组件
+const BoldIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg>;
+const ItalicIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>;
+const UnderlineIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>;
+const StrikeIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 11.5c.3 2.3-1.2 4.3-3.5 4.8-3.3.7-6.8-.2-9.5-2.4"/><path d="M17 5.2c1.7 1.5 2.5 3.6 2 5.8"/><path d="M4 12h16"/></svg>;
+const H1Icon = () => <span className="icon-text">H1</span>;
+const H2Icon = () => <span className="icon-text">H2</span>;
+const H3Icon = () => <span className="icon-text">H3</span>;
+const ListIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>;
+const OrderedListIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>;
+const QuoteIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>;
+const CodeIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
+const LinkIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>;
+const ImageIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>;
+const UndoIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9.003 9.003 0 00-9-9 9.003 9.003 0 00-8 4.95"/></svg>;
+const RedoIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9.003 9.003 0 019-9 9.003 9.003 0 018 4.95"/></svg>;
+const ClearIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>;
+const MoreIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>;
+
 // 示例文档内容
 const INITIAL_CONTENT = `
-<h1>欢迎使用 WheelChair 编辑器</h1>
-<p>这是一个<strong>现代化</strong>的富文本编辑器，具有<em>丰富的功能</em>。</p>
-<h2>主要特性</h2>
+<h1>🎨 欢迎使用 WheelChair 编辑器</h1>
+<p>这是一个<strong>现代化</strong>的富文本编辑器，具有<em>丰富的功能</em>和<mark>优秀的体验</mark>。</p>
+<h2>✨ 主要特性</h2>
 <ul>
-  <li>🎨 支持多种文本格式</li>
+  <li>🎨 支持多种文本格式（粗体、斜体、下划线、删除线）</li>
   <li>🖼️ 图片和媒体插入</li>
   <li>📊 表格支持</li>
   <li>🔗 链接和引用</li>
   <li>💻 代码块高亮</li>
   <li>📱 响应式设计</li>
+  <li>🎯 浮动工具栏</li>
+  <li>⌨️ 快捷键支持</li>
 </ul>
+<h2>🚀 开始使用</h2>
+<p>选中任意文本，会弹出<strong>气泡工具栏</strong>。输入 <code>/</code> 可以唤起快捷菜单。</p>
 <blockquote>
   <p>WheelChair 让富文本编辑变得简单而强大！</p>
 </blockquote>
-<p>立即开始你的创作之旅吧！</p>
+<p>开始你的创作之旅吧！✍️</p>
 `;
+
+interface ToolbarButtonProps {
+  onClick: () => void;
+  isActive?: boolean;
+  disabled?: boolean;
+  title: string;
+  children: React.ReactNode;
+}
+
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({ onClick, isActive, disabled, title, children }) => (
+  <button
+    className={`toolbar-btn ${isActive ? 'active' : ''} ${disabled ? 'disabled' : ''}`}
+    onClick={onClick}
+    disabled={disabled}
+    title={title}
+  >
+    {children}
+  </button>
+);
+
+const Divider = () => <div className="toolbar-divider" />;
 
 function App() {
   const { theme, toggleTheme } = useTheme();
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [showMore, setShowMore] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [showLinkInput, setShowLinkInput] = useState(false);
+  const linkInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+      }),
+      Image.configure({
+        allowBase64: true,
+      }),
+      Placeholder.configure({
+        placeholder: '开始写作...',
+      }),
+    ],
     content: INITIAL_CONTENT,
     editable: true,
-    autofocus: true,
+    autofocus: 'end',
     onUpdate: useCallback(({ editor }) => {
       console.log('内容已更新');
     }, []),
   });
+
+  useEffect(() => {
+    if (showLinkInput && linkInputRef.current) {
+      linkInputRef.current.focus();
+    }
+  }, [showLinkInput]);
 
   const handleSave = useCallback(() => {
     setLastSaved(new Date());
     console.log('保存内容:', editor?.getHTML());
   }, [editor]);
 
+  const addImage = useCallback(() => {
+    const url = window.prompt('请输入图片 URL:');
+    if (url && editor) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  }, [editor]);
+
+  const addLink = useCallback(() => {
+    if (editor.isActive('link')) {
+      editor.chain().focus().unsetLink().run();
+    } else {
+      setShowLinkInput(true);
+    }
+  }, [editor]);
+
+  const confirmLink = useCallback(() => {
+    if (linkUrl && editor) {
+      editor.chain().focus().setLink({ href: linkUrl }).run();
+      setLinkUrl('');
+      setShowLinkInput(false);
+    }
+  }, [editor, linkUrl]);
+
   const wordCount = editor ? {
     words: editor.getText().trim().split(/\s+/).filter(w => w.length > 0).length,
     characters: editor.getText().length,
   } : { words: 0, characters: 0 };
 
+  if (!editor) {
+    return <div className="loading">加载中...</div>;
+  }
+
   return (
     <div className={`app ${theme}`}>
       <header className="app-header">
         <div className="header-left">
-          <h1 className="app-title">🦽 WheelChair</h1>
+          <div className="logo-wrapper">
+            <span className="logo-icon">🦽</span>
+            <h1 className="app-title">WheelChair</h1>
+          </div>
           <span className="app-subtitle">富文本编辑器</span>
         </div>
         <div className="header-right">
-          <button 
-            className="theme-toggle" 
-            onClick={toggleTheme}
-            title={theme === 'dark' ? '切换到亮色主题' : '切换到暗色主题'}
-          >
-            {theme === 'dark' ? '🌙' : '☀️'}
+          <button className="icon-btn" onClick={toggleTheme} title={theme === 'dark' ? '切换到亮色' : '切换到暗色'}>
+            {theme === 'dark' ? '☀️' : '🌙'}
           </button>
-          <button className="btn btn-primary" onClick={handleSave}>
-            保存
+          <button className="btn-primary" onClick={handleSave}>
+            <span>💾</span>
+            <span>保存</span>
           </button>
         </div>
       </header>
 
       <main className="app-main">
-        <div className="editor-wrapper">
-          {/* 工具栏 */}
-          <div className="editor-toolbar">
-            <div className="toolbar-group">
-              <button 
-                className={`toolbar-button ${editor?.isActive('bold') ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleBold().run()}
+        <div className="editor-card">
+          {/* 主工具栏 */}
+          <div className="toolbar">
+            <div className="toolbar-section">
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                isActive={editor.isActive('bold')}
                 title="粗体 (Ctrl+B)"
               >
-                <strong>B</strong>
-              </button>
-              <button 
-                className={`toolbar-button ${editor?.isActive('italic') ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleItalic().run()}
+                <BoldIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                isActive={editor.isActive('italic')}
                 title="斜体 (Ctrl+I)"
               >
-                <em>I</em>
-              </button>
-              <button 
-                className={`toolbar-button ${editor?.isActive('strike') ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleStrike().run()}
+                <ItalicIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleUnderline().run()}
+                isActive={editor.isActive('underline')}
+                title="下划线 (Ctrl+U)"
+              >
+                <UnderlineIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+                isActive={editor.isActive('strike')}
                 title="删除线"
               >
-                <s>S</s>
-              </button>
+                <StrikeIcon />
+              </ToolbarButton>
             </div>
-            <div className="toolbar-divider" />
-            <div className="toolbar-group">
-              <button 
-                className={`toolbar-button ${editor?.isActive('heading', { level: 1 }) ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+
+            <Divider />
+
+            <div className="toolbar-section">
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                isActive={editor.isActive('heading', { level: 1 })}
                 title="标题 1"
               >
-                H1
-              </button>
-              <button 
-                className={`toolbar-button ${editor?.isActive('heading', { level: 2 }) ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+                <H1Icon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                isActive={editor.isActive('heading', { level: 2 })}
                 title="标题 2"
               >
-                H2
-              </button>
-              <button 
-                className={`toolbar-button ${editor?.isActive('bulletList') ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                <H2Icon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                isActive={editor.isActive('heading', { level: 3 })}
+                title="标题 3"
+              >
+                <H3Icon />
+              </ToolbarButton>
+            </div>
+
+            <Divider />
+
+            <div className="toolbar-section">
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+                isActive={editor.isActive('bulletList')}
                 title="无序列表"
               >
-                • List
-              </button>
-              <button 
-                className={`toolbar-button ${editor?.isActive('orderedList') ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+                <ListIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                isActive={editor.isActive('orderedList')}
                 title="有序列表"
               >
-                1. List
-              </button>
-              <button 
-                className={`toolbar-button ${editor?.isActive('blockquote') ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+                <OrderedListIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                isActive={editor.isActive('blockquote')}
                 title="引用"
               >
-                "Quote
-              </button>
-              <button 
-                className={`toolbar-button ${editor?.isActive('codeBlock') ? 'active' : ''}`}
-                onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
+                <QuoteIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                isActive={editor.isActive('codeBlock')}
                 title="代码块"
               >
-                {'</>'}
-              </button>
+                <CodeIcon />
+              </ToolbarButton>
             </div>
-            <div className="toolbar-divider" />
-            <div className="toolbar-group">
-              <button 
-                className="toolbar-button"
-                onClick={() => editor?.chain().focus().undo().run()}
-                title="撤销"
-                disabled={!editor?.can().undo()}
-              >
-                ↩️
-              </button>
-              <button 
-                className="toolbar-button"
-                onClick={() => editor?.chain().focus().redo().run()}
-                title="重做"
-                disabled={!editor?.can().redo()}
-              >
-                ↪️
-              </button>
-            </div>
-          </div>
-          
-          {/* 编辑器内容区域 */}
-          <div className="editor-container">
-            <EditorContent editor={editor} className="editor-content" />
-          </div>
-          
-          {/* 状态栏 */}
-          <div className="editor-statusbar">
-            <div className="status-left">
-              {editor?.isFocused ? '编辑中' : '就绪'}
-              {lastSaved && ` • 上次保存: ${lastSaved.toLocaleTimeString()}`}
-            </div>
-            <div className="status-right">
-              <span>字数: {wordCount.words}</span>
-              <span>字符: {wordCount.characters}</span>
-            </div>
-          </div>
-        </div>
 
-        <div className="editor-sidebar">
-          <div className="panel">
-            <h3>操作</h3>
-            <div className="panel-content">
-              <button 
-                className="btn btn-secondary"
-                onClick={() => {
-                  const html = editor?.getHTML();
-                  console.log('HTML:', html);
-                  alert('HTML 已输出到控制台');
-                }}
+            <Divider />
+
+            <div className="toolbar-section">
+              <ToolbarButton onClick={addLink} isActive={editor.isActive('link')} title="链接">
+                <LinkIcon />
+              </ToolbarButton>
+              <ToolbarButton onClick={addImage} title="图片">
+                <ImageIcon />
+              </ToolbarButton>
+            </div>
+
+            <div className="toolbar-spacer" />
+
+            <div className="toolbar-section">
+              <ToolbarButton
+                onClick={() => editor.chain().focus().undo().run()}
+                disabled={!editor.can().undo()}
+                title="撤销"
               >
-                查看 HTML
-              </button>
-              <button 
-                className="btn btn-secondary"
-                onClick={() => {
-                  const json = editor?.getJSON();
-                  console.log('JSON:', json);
-                  alert('JSON 已输出到控制台');
-                }}
+                <UndoIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().redo().run()}
+                disabled={!editor.can().redo()}
+                title="重做"
               >
-                查看 JSON
+                <RedoIcon />
+              </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
+                title="清除格式"
+              >
+                <ClearIcon />
+              </ToolbarButton>
+            </div>
+          </div>
+
+          {/* 链接输入框 */}
+          {showLinkInput && (
+            <div className="link-input-bar">
+              <input
+                ref={linkInputRef}
+                type="text"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                placeholder="输入链接地址..."
+                onKeyDown={(e) => e.key === 'Enter' && confirmLink()}
+              />
+              <button onClick={confirmLink}>确定</button>
+              <button onClick={() => setShowLinkInput(false)}>取消</button>
+            </div>
+          )}
+
+          {/* 编辑器内容区域 */}
+          <div className="editor-content-wrapper">
+            <EditorContent editor={editor} className="editor-content" />
+
+            {/* 气泡菜单 */}
+            <BubbleMenu
+              editor={editor}
+              tippyOptions={{ duration: 100, placement: 'top' }}
+              className="bubble-menu"
+            >
+              <button
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                className={editor.isActive('bold') ? 'active' : ''}
+              >
+                <BoldIcon />
               </button>
+              <button
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                className={editor.isActive('italic') ? 'active' : ''}
+              >
+                <ItalicIcon />
+              </button>
+              <button
+                onClick={() => editor.chain().focus().toggleUnderline().run()}
+                className={editor.isActive('underline') ? 'active' : ''}
+              >
+                <UnderlineIcon />
+              </button>
+              <button
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+                className={editor.isActive('strike') ? 'active' : ''}
+              >
+                <StrikeIcon />
+              </button>
+              <div className="bubble-divider" />
+              <button onClick={addLink} className={editor.isActive('link') ? 'active' : ''}>
+                <LinkIcon />
+              </button>
+            </BubbleMenu>
+
+            {/* 浮动菜单（空行时显示） */}
+            <FloatingMenu
+              editor={editor}
+              tippyOptions={{ duration: 100, placement: 'left-start' }}
+              className="floating-menu"
+              shouldShow={({ state }) => {
+                const { selection } = state;
+                const { $anchor, empty } = selection;
+                const isRootDepth = $anchor.depth === 1;
+                const isEmptyText = $anchor.parent.isTextblock && !$anchor.parent.textContent;
+                return empty && isRootDepth && isEmptyText;
+              }}
+            >
+              <div className="floating-menu-title">快速插入</div>
+              <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
+                <H1Icon /> 标题 1
+              </button>
+              <button onClick={() => editor.chain().focus().toggleBulletList().run()}>
+                <ListIcon /> 无序列表
+              </button>
+              <button onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
+                <CodeIcon /> 代码块
+              </button>
+              <button onClick={addImage}>
+                <ImageIcon /> 图片
+              </button>
+            </FloatingMenu>
+          </div>
+
+          {/* 状态栏 */}
+          <div className="statusbar">
+            <div className="statusbar-left">
+              <span className={`status-indicator ${editor.isFocused ? 'active' : ''}`}>
+                {editor.isFocused ? '● 编辑中' : '○ 就绪'}
+              </span>
+              {lastSaved && (
+                <span className="last-saved">
+                  上次保存: {lastSaved.toLocaleTimeString()}
+                </span>
+              )}
+            </div>
+            <div className="statusbar-right">
+              <div className="word-count">
+                <span>{wordCount.words} 词</span>
+                <span>{wordCount.characters} 字符</span>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
       <footer className="app-footer">
-        <p>WheelChair Editor © 2024 - 基于 Tiptap 构建</p>
+        <p>WheelChair Editor © 2024 • 基于 Tiptap 构建</p>
       </footer>
     </div>
   );

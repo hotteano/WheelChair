@@ -3,6 +3,11 @@
 /* WheelChair Editor Styles - 直接导入源文件 */
 @import '../../../packages/core/src/styles/index.css';
 
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* CSS Reset - 现代重置 */
 *,
 *::before,

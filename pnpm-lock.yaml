@@ -38,6 +38,18 @@ importers:
 
   apps/demo:
     dependencies:
+      '@tiptap/extension-image':
+        specifier: ^2.11.2
+        version: 2.11.2(@tiptap/core@2.27.2)
+      '@tiptap/extension-link':
+        specifier: ^2.11.2
+        version: 2.11.2(@tiptap/core@2.27.2)(@tiptap/pm@2.27.2)
+      '@tiptap/extension-placeholder':
+        specifier: ^2.11.2
+        version: 2.11.2(@tiptap/core@2.27.2)(@tiptap/pm@2.27.2)
+      '@tiptap/extension-underline':
+        specifier: ^2.11.2
+        version: 2.11.2(@tiptap/core@2.27.2)
       '@tiptap/react':
         specifier: ^2.1.0
         version: 2.27.2(@tiptap/core@2.27.2)(@tiptap/pm@2.27.2)(react-dom@18.3.1)(react@18.3.1)
@@ -1156,6 +1168,14 @@ packages:
       '@tiptap/pm': 2.27.2
     dev: false
 
+  /@tiptap/extension-image@2.11.2(@tiptap/core@2.27.2):
+    resolution: {integrity: sha512-Ag+Arj6sclTqhvR+v5I2UD5e2lsWTcXLj0aS2aEsfGpytltk6rcLj6iDjx/SmJrE1BN8ognJsdzmFdZF/rNLpg==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+    dependencies:
+      '@tiptap/core': 2.27.2(@tiptap/pm@2.27.2)
+    dev: false
+
   /@tiptap/extension-image@2.27.2(@tiptap/core@2.27.2):
     resolution: {integrity: sha512-5zL/BY41FIt72azVrCrv3n+2YJ/JyO8wxCcA4Dk1eXIobcgVyIdo4rG39gCqIOiqziAsqnqoj12QHTBtHsJ6mQ==}
     peerDependencies:
@@ -1170,6 +1190,17 @@ packages:
       '@tiptap/core': ^2.7.0
     dependencies:
       '@tiptap/core': 2.27.2(@tiptap/pm@2.27.2)
+    dev: false
+
+  /@tiptap/extension-link@2.11.2(@tiptap/core@2.27.2)(@tiptap/pm@2.27.2):
+    resolution: {integrity: sha512-Mbre+JotLMUg9jdWWrwIReiRVMkA2kMzmtD2Aqy/n5P+wuI84898qIZSkhPEzDOGzp0mluUO/iGsz0NdTto/JQ==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+      '@tiptap/pm': ^2.7.0
+    dependencies:
+      '@tiptap/core': 2.27.2(@tiptap/pm@2.27.2)
+      '@tiptap/pm': 2.27.2
+      linkifyjs: 4.3.2
     dev: false
 
   /@tiptap/extension-link@2.27.2(@tiptap/core@2.27.2)(@tiptap/pm@2.27.2):
@@ -1205,6 +1236,16 @@ packages:
       '@tiptap/core': ^2.7.0
     dependencies:
       '@tiptap/core': 2.27.2(@tiptap/pm@2.27.2)
+    dev: false
+
+  /@tiptap/extension-placeholder@2.11.2(@tiptap/core@2.27.2)(@tiptap/pm@2.27.2):
+    resolution: {integrity: sha512-7rv6nylqX57Q+K+AH794Kg9U7OrLyujhXXqQvd9iZdBP7bTCNUlFu0cGlIyHdM/eWJjoUblZs0VLV2IApk4xjQ==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+      '@tiptap/pm': ^2.7.0
+    dependencies:
+      '@tiptap/core': 2.27.2(@tiptap/pm@2.27.2)
+      '@tiptap/pm': 2.27.2
     dev: false
 
   /@tiptap/extension-strike@2.27.2(@tiptap/core@2.27.2):
@@ -1259,6 +1300,14 @@ packages:
 
   /@tiptap/extension-text@2.27.2(@tiptap/core@2.27.2):
     resolution: {integrity: sha512-Xk7nYcigljAY0GO9hAQpZ65ZCxqOqaAlTPDFcKerXmlkQZP/8ndx95OgUb1Xf63kmPOh3xypurGS2is3v0MXSA==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+    dependencies:
+      '@tiptap/core': 2.27.2(@tiptap/pm@2.27.2)
+    dev: false
+
+  /@tiptap/extension-underline@2.11.2(@tiptap/core@2.27.2):
+    resolution: {integrity: sha512-Gq7hfV3D/3E1zoE6JXSYZ3boKfbjebFu7IuQZ6w6QSS/IkGN8c6kW+WtkhOKN3jV7Z5uF5KIVp3XCqNIwChWNQ==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
     dependencies:
