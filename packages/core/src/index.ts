@@ -55,6 +55,18 @@ export { ImportExportManager } from './utils/importExport';
 export type { ExportFormat as UtilExportFormat, ExportOptions as UtilExportOptions, ImportOptions } from './utils/importExport';
 
 // ============================================
+// 导出器
+// ============================================
+export { WCExporter } from './exporters/WCExporter';
+export type { WCExportOptions, WCFileStructure } from './exporters/WCExporter';
+
+// ============================================
+// 导入器
+// ============================================
+export { WCImporter } from './importers/WCImporter';
+export type { WCImportOptions, WCImportResult } from './importers/WCImporter';
+
+// ============================================
 // 版本信息
 // ============================================
 export const VERSION = '0.1.0';

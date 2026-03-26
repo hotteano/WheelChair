@@ -14,6 +14,7 @@ export enum ExportFormat {
   HTML = 'html',
   JSON = 'json',
   TEXT = 'text',
+  WC = 'wc', // WheelChair 专属格式
 }
 
 /**
@@ -236,13 +237,16 @@ export function readFile(file: File): Promise<string> {
 /**
  * 获取默认文件名
  */
-export function getDefaultFilename(format: ExportFormat): string {
+export function getDefaultFilename(format: ExportFormat, title?: string): string {
   const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+  const safeTitle = title ? title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').slice(0, 50) : 'document';
+  
   const names: Record<ExportFormat, string> = {
-    [ExportFormat.MARKDOWN]: `document-${timestamp}.md`,
-    [ExportFormat.HTML]: `document-${timestamp}.html`,
-    [ExportFormat.JSON]: `document-${timestamp}.json`,
-    [ExportFormat.TEXT]: `document-${timestamp}.txt`,
+    [ExportFormat.MARKDOWN]: `${safeTitle}-${timestamp}.md`,
+    [ExportFormat.HTML]: `${safeTitle}-${timestamp}.html`,
+    [ExportFormat.JSON]: `${safeTitle}-${timestamp}.json`,
+    [ExportFormat.TEXT]: `${safeTitle}-${timestamp}.txt`,
+    [ExportFormat.WC]: `${safeTitle}-${timestamp}.wc`,
   };
   return names[format];
 }

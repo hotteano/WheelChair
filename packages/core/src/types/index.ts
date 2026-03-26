@@ -272,7 +272,6 @@ export type {
   DocumentStore,
   PersistedDocuments,
   DocumentManagerOptions,
-  ExportFormat,
   ExportOptions,
   DocumentEventMap,
   DocumentEventListener,
@@ -281,7 +280,7 @@ export type {
   DocumentSorter,
 } from '../document/types';
 
-export { ExportFormat } from '../document/types';
+export { ExportFormat } from '../utils/importExport';
 
 // ============================================
 // React 导入

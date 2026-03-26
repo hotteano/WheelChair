@@ -17,3 +17,9 @@ export type {
   ExportedDocument, 
   DocumentStats 
 } from './JSONExporter';
+
+export { WCExporter } from './WCExporter';
+export type { 
+  WCExportOptions, 
+  WCFileStructure 
+} from './WCExporter';

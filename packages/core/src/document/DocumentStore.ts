@@ -48,6 +48,12 @@ export interface UseDocumentManagerReturn {
   // 事件订阅
   on: <T extends keyof DocumentEventMap>(event: T, listener: DocumentEventListener<T>) => () => void;
   off: <T extends keyof DocumentEventMap>(event: T, listener: DocumentEventListener<T>) => void;
+  
+  // WheelChair (.wc) 格式导入导出
+  exportToWC: (id: string, options?: { pretty?: boolean }) => string;
+  importFromWC: (content: string) => Document;
+  downloadAsWC: (id: string, filename?: string) => void;
+  importWCFromFile: (file: File) => Promise<Document>;
 }
 
 // ============================================
@@ -184,6 +190,23 @@ export function useDocumentManager(
     manager.off(event, listener);
   }, [manager]);
   
+  // WheelChair (.wc) 格式导入导出方法
+  const exportToWC = useCallback((id: string, options?: { pretty?: boolean }) => {
+    return manager.exportToWC(id, options);
+  }, [manager]);
+  
+  const importFromWC = useCallback((content: string) => {
+    return manager.importFromWC(content);
+  }, [manager]);
+  
+  const downloadAsWC = useCallback((id: string, filename?: string) => {
+    manager.downloadAsWC(id, filename);
+  }, [manager]);
+  
+  const importWCFromFile = useCallback(async (file: File) => {
+    return manager.importWCFromFile(file);
+  }, [manager]);
+  
   return {
     // 状态
     documents,
@@ -214,6 +237,12 @@ export function useDocumentManager(
     // 事件订阅
     on,
     off,
+    
+    // WheelChair (.wc) 格式导入导出
+    exportToWC,
+    importFromWC,
+    downloadAsWC,
+    importWCFromFile,
   };
 }
 

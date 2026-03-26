@@ -13,6 +13,7 @@ export interface DocumentItemProps {
   onDelete: () => void;
   onRename: (newTitle: string) => void;
   onDuplicate: () => void;
+  onExport?: () => void;
 }
 
 export const DocumentItem: React.FC<DocumentItemProps> = ({
@@ -22,13 +23,16 @@ export const DocumentItem: React.FC<DocumentItemProps> = ({
   onDelete,
   onRename,
   onDuplicate,
+  onExport,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(document.title);
   const [showMenu, setShowMenu] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const itemRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // 自动聚焦输入框
   useEffect(() => {
@@ -88,6 +92,16 @@ export const DocumentItem: React.FC<DocumentItemProps> = ({
   // 处理更多按钮点击
   const handleMoreClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // 计算菜单位置
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + 4,
+        left: rect.right - 160, // 菜单宽度 160px，右对齐
+      });
+    }
+    
     setShowMenu(prev => !prev);
   }, []);
 
@@ -187,6 +201,7 @@ export const DocumentItem: React.FC<DocumentItemProps> = ({
       
       <div className="wch-doc-item__actions" onClick={(e) => e.stopPropagation()}>
         <button
+          ref={buttonRef}
           className="wch-doc-item__action"
           onClick={handleMoreClick}
           title="更多操作"
@@ -195,7 +210,11 @@ export const DocumentItem: React.FC<DocumentItemProps> = ({
         </button>
         
         {showMenu && (
-          <div ref={menuRef} className="wch-doc-menu">
+          <div 
+            ref={menuRef} 
+            className="wch-doc-menu"
+            style={{ top: menuPosition.top, left: menuPosition.left }}
+          >
             <button className="wch-doc-menu__item" onClick={handleRenameClick}>
               <EditIcon />
               重命名
@@ -204,6 +223,12 @@ export const DocumentItem: React.FC<DocumentItemProps> = ({
               <CopyIcon />
               创建副本
             </button>
+            {onExport && (
+              <button className="wch-doc-menu__item" onClick={(e) => { e.stopPropagation(); setShowMenu(false); onExport(); }}>
+                <ExportIcon />
+                导出为 .wc
+              </button>
+            )}
             <div className="wch-doc-menu__divider" />
             <button 
               className="wch-doc-menu__item wch-doc-menu__item--danger" 
@@ -249,6 +274,14 @@ const CopyIcon: React.FC = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </svg>
+);
+
+const ExportIcon: React.FC = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
   </svg>
 );
 

@@ -245,6 +245,7 @@
   gap: 2px;
   opacity: 0;
   transition: opacity 0.15s;
+  position: relative;
 }
 
 .wch-doc-item:hover .wch-doc-item__actions,
@@ -280,15 +281,13 @@
    ============================================ */
 
 .wch-doc-menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
+  position: fixed;
   min-width: 160px;
   background: var(--wch-menu-bg, #ffffff);
   border: 1px solid var(--wch-menu-border, #e2e8f0);
   border-radius: 8px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  z-index: 100;
+  z-index: 10000;
   overflow: hidden;
 }
 
@@ -330,6 +329,9 @@
    ============================================ */
 
 .wch-sidebar__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 12px 16px;
   border-top: 1px solid var(--wch-sidebar-border, #e2e8f0);
 }
@@ -337,6 +339,27 @@
 .wch-sidebar__stats {
   font-size: 12px;
   color: var(--wch-text-tertiary, #94a3b8);
+}
+
+.wch-sidebar__import-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--wch-text-secondary, #64748b);
+  background: var(--wch-hover-bg, #f1f5f9);
+  border: 1px solid var(--wch-border, #e2e8f0);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wch-sidebar__import-btn:hover {
+  background: var(--wch-active-bg, #dbeafe);
+  color: var(--wch-primary, #3b82f6);
+  border-color: var(--wch-primary-border, #bfdbfe);
 }
 
 /* ============================================

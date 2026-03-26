@@ -638,6 +638,113 @@ export class DocumentManager implements DocumentStore {
         throw new Error(`Import format not implemented: ${format}`);
     }
   }
+
+  // ============================================
+  // WheelChair (.wc) 专属格式导入导出
+  // ============================================
+
+  /**
+   * 导出文档为 .wc 格式
+   */
+  exportToWC(id: string, options?: { pretty?: boolean; includeMetadata?: boolean }): string {
+    const doc = this.state.documents.find(d => d.id === id);
+    if (!doc) {
+      throw new Error(`Document not found: ${id}`);
+    }
+
+    // 使用 WCExporter 导出
+    const now = new Date().toISOString();
+    const wcFile = {
+      format: 'wheelchair' as const,
+      version: '1.0.0',
+      createdAt: new Date(doc.createdAt).toISOString(),
+      modifiedAt: new Date(doc.updatedAt).toISOString(),
+      document: {
+        title: doc.title,
+        content: doc.content,
+        wordCount: doc.wordCount,
+      },
+      metadata: {
+        editorVersion: '0.1.0',
+        originalId: doc.id,
+      },
+    };
+
+    return JSON.stringify(wcFile, null, options?.pretty ? 2 : undefined);
+  }
+
+  /**
+   * 从 .wc 文件导入文档
+   */
+  importFromWC(content: string, options?: { validate?: boolean }): Document {
+    const validate = options?.validate ?? true;
+    
+    // 检查是否是压缩格式
+    let jsonContent = content;
+    if (content.startsWith('COMPRESSED:')) {
+      const compressed = content.slice('COMPRESSED:'.length);
+      jsonContent = decodeURIComponent(escape(atob(compressed)));
+    }
+
+    const wcFile = JSON.parse(jsonContent);
+
+    // 验证文件结构
+    if (validate) {
+      if (!wcFile.format || wcFile.format !== 'wheelchair') {
+        throw new Error('Invalid .wc file: missing or invalid format field');
+      }
+      if (!wcFile.document || !wcFile.document.content) {
+        throw new Error('Invalid .wc file: missing document content');
+      }
+    }
+
+    return this.createDocument(
+      wcFile.document.title || '导入的文档',
+      wcFile.document.content
+    );
+  }
+
+  /**
+   * 下载文档为 .wc 文件
+   */
+  downloadAsWC(id: string, filename?: string): void {
+    const doc = this.state.documents.find(d => d.id === id);
+    if (!doc) {
+      throw new Error(`Document not found: ${id}`);
+    }
+
+    const content = this.exportToWC(id, { pretty: true });
+    const blob = new Blob([content], { type: 'application/wheelchair+json' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename || `${doc.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_')}.wc`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  /**
+   * 从文件导入 .wc 文档
+   */
+  async importWCFromFile(file: File): Promise<Document> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const content = e.target?.result as string;
+          const doc = this.importFromWC(content);
+          resolve(doc);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsText(file);
+    });
+  }
 }
 
 // ============================================

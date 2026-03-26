@@ -127,15 +127,10 @@ export interface DocumentManagerOptions {
 }
 
 // ============================================
-// 导出格式
+// 导出格式（从 importExport 重新导出）
 // ============================================
 
-export enum ExportFormat {
-  MARKDOWN = 'markdown',
-  HTML = 'html',
-  JSON = 'json',
-  TEXT = 'text',
-}
+export { ExportFormat } from '../utils/importExport';
 
 export interface ExportOptions {
   /** 包含元数据 */

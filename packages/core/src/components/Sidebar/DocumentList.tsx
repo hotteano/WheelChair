@@ -14,6 +14,7 @@ export interface DocumentListProps {
   onDelete: (id: string) => void;
   onRename: (id: string, newTitle: string) => void;
   onDuplicate: (id: string) => void;
+  onExport?: (id: string) => void;
   emptyText?: string;
   className?: string;
 }
@@ -25,6 +26,7 @@ export const DocumentList: React.FC<DocumentListProps> = ({
   onDelete,
   onRename,
   onDuplicate,
+  onExport,
   emptyText = '暂无文档',
   className = '',
 }) => {
@@ -48,6 +50,7 @@ export const DocumentList: React.FC<DocumentListProps> = ({
           onDelete={() => onDelete(doc.id)}
           onRename={(newTitle) => onRename(doc.id, newTitle)}
           onDuplicate={() => onDuplicate(doc.id)}
+          onExport={onExport ? () => onExport(doc.id) : undefined}
         />
       ))}
     </div>

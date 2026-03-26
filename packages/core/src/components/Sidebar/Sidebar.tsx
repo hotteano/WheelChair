@@ -50,7 +50,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     duplicateDocument,
     setActiveDocument,
     searchDocuments,
+    downloadAsWC,
+    importWCFromFile,
   } = documentManager;
+  
+  // 文件输入引用（用于导入）
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // 搜索关键词
   const [searchQuery, setSearchQuery] = useState('');
@@ -93,6 +98,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const handleDuplicateDocument = useCallback((id: string) => {
     duplicateDocument(id);
   }, [duplicateDocument]);
+  
+  // 处理导出文档为 .wc 格式
+  const handleExportDocument = useCallback((id: string) => {
+    try {
+      downloadAsWC(id);
+    } catch (error) {
+      console.error('导出失败:', error);
+      alert('导出失败: ' + (error instanceof Error ? error.message : '未知错误'));
+    }
+  }, [downloadAsWC]);
+  
+  // 处理导入 .wc 文件
+  const handleImportClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+  
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      await importWCFromFile(file);
+      // 清空输入以便可以再次选择同一文件
+      e.target.value = '';
+    } catch (error) {
+      console.error('导入失败:', error);
+      alert('导入失败: ' + (error instanceof Error ? error.message : '未知错误'));
+      e.target.value = '';
+    }
+  }, [importWCFromFile]);
 
   // 如果收起状态
   if (collapsed) {
@@ -165,15 +200,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onDelete={handleDeleteDocument}
           onRename={handleRenameDocument}
           onDuplicate={handleDuplicateDocument}
+          onExport={handleExportDocument}
           emptyText={searchQuery ? '没有找到匹配的文档' : '暂无文档，点击上方按钮创建'}
         />
       </div>
 
-      {/* 底部统计 */}
+      {/* 底部 */}
       <div className="wch-sidebar__footer">
         <span className="wch-sidebar__stats">
           {documents.length} 个文档
         </span>
+        <button
+          className="wch-sidebar__import-btn"
+          onClick={handleImportClick}
+          title="导入 .wc 文件"
+        >
+          <ImportIcon />
+          导入
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".wc"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
       </div>
     </aside>
   );
@@ -186,6 +237,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 const ChevronLeftIcon: React.FC = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
+
+const ImportIcon: React.FC = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="17 8 12 3 7 8" />
+    <line x1="12" y1="3" x2="12" y2="15" />
   </svg>
 );
 

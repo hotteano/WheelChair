@@ -31,3 +31,9 @@ export type {
   PasteData, 
   PasteImportResult 
 } from './PasteImporter';
+
+export { WCImporter } from './WCImporter';
+export type { 
+  WCImportOptions, 
+  WCImportResult 
+} from './WCImporter';
