@@ -178,15 +178,17 @@ body {
 }
 
 .editor-card {
-  width: 100%;
-  max-width: 900px;
+  width: 70%;
+  max-width: 1400px;
+  min-width: 600px;
   background: var(--bg-primary);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 600px;
+  min-height: 80vh;
+  margin: 0 auto;
 }
 
 /* ============================================
@@ -309,7 +311,7 @@ body {
 .editor-content-wrapper {
   flex: 1;
   position: relative;
-  padding: 2rem;
+  padding: 2.5rem 3rem;
   background: var(--bg-primary);
 }
 
@@ -319,7 +321,7 @@ body {
 
 .editor-content .ProseMirror {
   outline: none;
-  min-height: 400px;
+  min-height: 70vh;
   font-size: 1rem;
   line-height: 1.8;
   color: var(--text-primary);
@@ -595,9 +597,41 @@ body {
   color: var(--text-muted);
 }
 
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ============================================
    响应式设计
    ============================================ */
+@media (max-width: 1200px) {
+  .editor-card {
+    width: 80%;
+    min-width: auto;
+  }
+}
+
 @media (max-width: 768px) {
   .app-header {
     padding: 0.75rem 1rem;
@@ -616,6 +650,8 @@ body {
   }
   
   .editor-card {
+    width: 95%;
+    min-width: auto;
     border-radius: var(--radius-lg);
   }
   

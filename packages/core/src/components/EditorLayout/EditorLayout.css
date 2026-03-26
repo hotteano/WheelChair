@@ -1,0 +1,151 @@
+/**
+ * WheelChair Editor - EditorLayout Styles
+ * 编辑器布局样式
+ */
+
+/* ============================================
+   布局容器
+   ============================================ */
+
+.wch-editor-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--wch-bg, #f1f5f9);
+}
+
+/* ============================================
+   主内容区
+   ============================================ */
+
+.wch-editor-layout__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ============================================
+   头部
+   ============================================ */
+
+.wch-editor-layout__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: var(--wch-header-bg, #ffffff);
+  border-bottom: 1px solid var(--wch-border, #e2e8f0);
+  flex-shrink: 0;
+}
+
+.wch-editor-layout__sidebar-toggle {
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--wch-text-secondary, #64748b);
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.wch-editor-layout__sidebar-toggle:hover {
+  background: var(--wch-hover-bg, #f1f5f9);
+  color: var(--wch-text-primary, #1e293b);
+}
+
+/* ============================================
+   工具栏
+   ============================================ */
+
+.wch-editor-layout__toolbar {
+  padding: 12px 20px;
+  background: var(--wch-toolbar-bg, #ffffff);
+  border-bottom: 1px solid var(--wch-border, #e2e8f0);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   内容区
+   ============================================ */
+
+.wch-editor-layout__content {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ============================================
+   底部
+   ============================================ */
+
+.wch-editor-layout__footer {
+  padding: 8px 20px;
+  background: var(--wch-footer-bg, #ffffff);
+  border-top: 1px solid var(--wch-border, #e2e8f0);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   滚动条样式
+   ============================================ */
+
+.wch-editor-layout__content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.wch-editor-layout__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wch-editor-layout__content::-webkit-scrollbar-thumb {
+  background: var(--wch-scrollbar, #cbd5e1);
+  border-radius: 4px;
+}
+
+.wch-editor-layout__content::-webkit-scrollbar-thumb:hover {
+  background: var(--wch-scrollbar-hover, #94a3b8);
+}
+
+/* ============================================
+   暗色主题适配
+   ============================================ */
+
+[data-theme="dark"] .wch-editor-layout {
+  --wch-bg: #0f172a;
+  --wch-header-bg: #1e293b;
+  --wch-toolbar-bg: #1e293b;
+  --wch-footer-bg: #1e293b;
+  --wch-border: #334155;
+  --wch-text-primary: #f1f5f9;
+  --wch-text-secondary: #94a3b8;
+  --wch-hover-bg: #334155;
+  --wch-scrollbar: #475569;
+  --wch-scrollbar-hover: #64748b;
+}
+
+/* ============================================
+   响应式适配
+   ============================================ */
+
+@media (max-width: 768px) {
+  .wch-editor-layout__content {
+    padding: 12px;
+  }
+  
+  .wch-editor-layout__header,
+  .wch-editor-layout__toolbar,
+  .wch-editor-layout__footer {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

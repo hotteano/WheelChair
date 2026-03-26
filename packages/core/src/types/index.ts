@@ -262,6 +262,28 @@ export interface ThemeProviderProps {
 }
 
 // ============================================
+// 文档管理类型
+// ============================================
+
+export type {
+  Document,
+  DocumentState,
+  DocumentActions,
+  DocumentStore,
+  PersistedDocuments,
+  DocumentManagerOptions,
+  ExportFormat,
+  ExportOptions,
+  DocumentEventMap,
+  DocumentEventListener,
+  GenerateId,
+  DocumentFilter,
+  DocumentSorter,
+} from '../document/types';
+
+export { ExportFormat } from '../document/types';
+
+// ============================================
 // React 导入
 // ============================================
 

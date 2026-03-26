@@ -1,0 +1,434 @@
+/**
+ * WheelChair Editor - Sidebar Styles
+ * 侧边栏样式
+ */
+
+/* ============================================
+   侧边栏容器
+   ============================================ */
+
+.wch-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--wch-sidebar-bg, #f8fafc);
+  border-right: 1px solid var(--wch-sidebar-border, #e2e8f0);
+  transition: width 0.2s ease;
+}
+
+.wch-sidebar--collapsed {
+  align-items: center;
+  padding: 8px 0;
+}
+
+/* ============================================
+   头部
+   ============================================ */
+
+.wch-sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--wch-sidebar-border, #e2e8f0);
+}
+
+.wch-sidebar__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--wch-text-primary, #1e293b);
+  margin: 0;
+}
+
+/* ============================================
+   搜索框
+   ============================================ */
+
+.wch-sidebar__search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--wch-sidebar-border, #e2e8f0);
+}
+
+.wch-search-box {
+  position: relative;
+  width: 100%;
+}
+
+.wch-search-box__input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  font-size: 14px;
+  border: 1px solid var(--wch-input-border, #cbd5e1);
+  border-radius: 6px;
+  background: var(--wch-input-bg, #ffffff);
+  color: var(--wch-text-primary, #1e293b);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.wch-search-box__input:focus {
+  outline: none;
+  border-color: var(--wch-primary, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wch-search-box__input::placeholder {
+  color: var(--wch-text-tertiary, #94a3b8);
+}
+
+.wch-search-box__icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--wch-text-tertiary, #94a3b8);
+  pointer-events: none;
+}
+
+.wch-search-box__clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+  border: none;
+  background: transparent;
+  color: var(--wch-text-tertiary, #94a3b8);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wch-search-box__clear:hover {
+  background: var(--wch-hover-bg, #f1f5f9);
+  color: var(--wch-text-secondary, #64748b);
+}
+
+/* ============================================
+   操作按钮区
+   ============================================ */
+
+.wch-sidebar__actions {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--wch-sidebar-border, #e2e8f0);
+}
+
+.wch-new-doc-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--wch-primary, #3b82f6);
+  background: var(--wch-primary-bg, #eff6ff);
+  border: 1px dashed var(--wch-primary-border, #bfdbfe);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wch-new-doc-btn:hover {
+  background: var(--wch-primary-bg-hover, #dbeafe);
+  border-style: solid;
+}
+
+.wch-new-doc-btn:active {
+  transform: scale(0.98);
+}
+
+/* ============================================
+   文档列表
+   ============================================ */
+
+.wch-sidebar__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.wch-doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wch-doc-list__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--wch-text-tertiary, #94a3b8);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ============================================
+   文档项
+   ============================================ */
+
+.wch-doc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.wch-doc-item:hover {
+  background: var(--wch-hover-bg, #f1f5f9);
+}
+
+.wch-doc-item--active {
+  background: var(--wch-active-bg, #dbeafe) !important;
+}
+
+.wch-doc-item--editing {
+  padding: 6px 8px;
+}
+
+.wch-doc-item__icon {
+  flex-shrink: 0;
+  color: var(--wch-text-tertiary, #94a3b8);
+}
+
+.wch-doc-item--active .wch-doc-item__icon {
+  color: var(--wch-primary, #3b82f6);
+}
+
+.wch-doc-item__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wch-doc-item__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--wch-text-primary, #1e293b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wch-doc-item--active .wch-doc-item__title {
+  color: var(--wch-primary, #3b82f6);
+  font-weight: 600;
+}
+
+.wch-doc-item__meta {
+  font-size: 12px;
+  color: var(--wch-text-tertiary, #94a3b8);
+}
+
+.wch-doc-item__input {
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid var(--wch-primary, #3b82f6);
+  border-radius: 4px;
+  outline: none;
+}
+
+.wch-doc-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.wch-doc-item:hover .wch-doc-item__actions,
+.wch-doc-item--active .wch-doc-item__actions {
+  opacity: 1;
+}
+
+.wch-doc-item__action {
+  padding: 6px;
+  border: none;
+  background: transparent;
+  color: var(--wch-text-tertiary, #94a3b8);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.wch-doc-item__action:hover {
+  background: var(--wch-hover-bg-strong, #e2e8f0);
+  color: var(--wch-text-secondary, #64748b);
+}
+
+.wch-doc-item__action--danger:hover {
+  background: var(--wch-danger-bg, #fef2f2);
+  color: var(--wch-danger, #ef4444);
+}
+
+/* ============================================
+   更多菜单
+   ============================================ */
+
+.wch-doc-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  min-width: 160px;
+  background: var(--wch-menu-bg, #ffffff);
+  border: 1px solid var(--wch-menu-border, #e2e8f0);
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.wch-doc-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--wch-text-primary, #1e293b);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.wch-doc-menu__item:hover {
+  background: var(--wch-hover-bg, #f1f5f9);
+}
+
+.wch-doc-menu__item--danger {
+  color: var(--wch-danger, #ef4444);
+}
+
+.wch-doc-menu__item--danger:hover {
+  background: var(--wch-danger-bg, #fef2f2);
+}
+
+.wch-doc-menu__divider {
+  height: 1px;
+  margin: 6px 0;
+  background: var(--wch-menu-border, #e2e8f0);
+}
+
+/* ============================================
+   底部
+   ============================================ */
+
+.wch-sidebar__footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--wch-sidebar-border, #e2e8f0);
+}
+
+.wch-sidebar__stats {
+  font-size: 12px;
+  color: var(--wch-text-tertiary, #94a3b8);
+}
+
+/* ============================================
+   收起状态
+   ============================================ */
+
+.wch-sidebar__collapsed-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.wch-sidebar__toggle {
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--wch-text-tertiary, #94a3b8);
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.wch-sidebar__toggle:hover {
+  background: var(--wch-hover-bg, #f1f5f9);
+  color: var(--wch-text-secondary, #64748b);
+}
+
+.wch-sidebar__collapsed-btn {
+  padding: 10px;
+  border: none;
+  background: var(--wch-primary-bg, #eff6ff);
+  color: var(--wch-primary, #3b82f6);
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.wch-sidebar__collapsed-btn:hover {
+  background: var(--wch-primary-bg-hover, #dbeafe);
+}
+
+/* ============================================
+   滚动条样式
+   ============================================ */
+
+.wch-sidebar__content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.wch-sidebar__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wch-sidebar__content::-webkit-scrollbar-thumb {
+  background: var(--wch-scrollbar, #cbd5e1);
+  border-radius: 3px;
+}
+
+.wch-sidebar__content::-webkit-scrollbar-thumb:hover {
+  background: var(--wch-scrollbar-hover, #94a3b8);
+}
+
+/* ============================================
+   暗色主题适配
+   ============================================ */
+
+[data-theme="dark"] .wch-sidebar {
+  --wch-sidebar-bg: #1e293b;
+  --wch-sidebar-border: #334155;
+  --wch-text-primary: #f1f5f9;
+  --wch-text-secondary: #94a3b8;
+  --wch-text-tertiary: #64748b;
+  --wch-input-bg: #0f172a;
+  --wch-input-border: #334155;
+  --wch-hover-bg: #334155;
+  --wch-hover-bg-strong: #475569;
+  --wch-active-bg: #1e40af;
+  --wch-primary: #60a5fa;
+  --wch-primary-bg: #1e3a8a;
+  --wch-primary-bg-hover: #1e40af;
+  --wch-primary-border: #3b82f6;
+  --wch-menu-bg: #1e293b;
+  --wch-menu-border: #334155;
+  --wch-danger: #f87171;
+  --wch-danger-bg: #7f1d1d;
+  --wch-scrollbar: #475569;
+  --wch-scrollbar-hover: #64748b;
+}
