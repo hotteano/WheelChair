@@ -8,8 +8,14 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { 
   useDocumentManager, 
   EditorLayout,
-  type JSONContent 
+  InlineMath,
+  BlockMath,
+  MathEditor,
+  insertInlineMath,
+  insertBlockMath,
+  updateMath,
 } from '@wheelchair/core';
+import type { JSONContent } from '@tiptap/core';
 import { useTheme } from '@wheelchair/core/context/ThemeContext';
 import './App.css';
 
@@ -18,6 +24,8 @@ const BoldIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="c
 const ItalicIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>;
 const UnderlineIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>;
 const StrikeIcon = () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 11.5c.3 2.3-1.2 4.3-3.5 4.8-3.3.7-6.8-.2-9.5-2.4"/><path d="M17 5.2c1.7 1.5 2.5 3.6 2 5.8"/><path d="M4 12h16"/></svg>;
+const MathIcon = () => <span style={{ fontWeight: 'bold', fontStyle: 'italic' }}>Σ</span>;
+const MathBlockIcon = () => <span style={{ fontWeight: 'bold', fontSize: '16px' }}>∫</span>;
 const H1Icon = () => <span className="icon-text">H1</span>;
 const H2Icon = () => <span className="icon-text">H2</span>;
 const H3Icon = () => <span className="icon-text">H3</span>;
@@ -59,6 +67,14 @@ function App() {
   const [showLinkInput, setShowLinkInput] = useState(false);
   const linkInputRef = useRef<HTMLInputElement>(null);
   
+  // 数学公式相关状态
+  const [showMathEditor, setShowMathEditor] = useState(false);
+  const [mathEditorData, setMathEditorData] = useState<{
+    type: 'inlineMath' | 'blockMath';
+    latex: string;
+    pos?: number;
+  } | null>(null);
+  
   // 使用文档管理器
   const documentManager = useDocumentManager();
   const { 
@@ -83,8 +99,10 @@ function App() {
         allowBase64: true,
       }),
       Placeholder.configure({
-        placeholder: '开始写作...',
+        placeholder: '开始写作...支持 $E=mc^2$ 公式输入',
       }),
+      InlineMath,
+      BlockMath,
     ],
     content: activeDocument?.content || '',
     editable: true,
@@ -96,6 +114,63 @@ function App() {
       }
     }, [activeDocument, updateDocumentContent]),
   });
+
+  // 监听数学公式编辑事件
+  useEffect(() => {
+    const handleMathEdit = (e: CustomEvent) => {
+      const { type, latex, pos } = e.detail;
+      setMathEditorData({ type, latex, pos });
+      setShowMathEditor(true);
+    };
+
+    const handleMathInsert = (e: CustomEvent) => {
+      const { type } = e.detail;
+      setMathEditorData({ type: type || 'inlineMath', latex: '' });
+      setShowMathEditor(true);
+    };
+
+    document.addEventListener('math:edit', handleMathEdit as EventListener);
+    document.addEventListener('math:insert', handleMathInsert as EventListener);
+
+    return () => {
+      document.removeEventListener('math:edit', handleMathEdit as EventListener);
+      document.removeEventListener('math:insert', handleMathInsert as EventListener);
+    };
+  }, []);
+
+  // 处理公式编辑确认
+  const handleMathConfirm = (latex: string, type: 'inlineMath' | 'blockMath') => {
+    if (!editor) return;
+
+    if (mathEditorData?.pos !== undefined) {
+      // 更新现有公式
+      updateMath(editor, mathEditorData.pos, latex);
+    } else {
+      // 插入新公式
+      if (type === 'inlineMath') {
+        insertInlineMath(editor, latex);
+      } else {
+        insertBlockMath(editor, latex);
+      }
+    }
+    setShowMathEditor(false);
+    setMathEditorData(null);
+  };
+
+  // 处理公式删除
+  const handleMathDelete = () => {
+    if (!editor || mathEditorData?.pos === undefined) return;
+    
+    const node = editor.state.doc.nodeAt(mathEditorData.pos);
+    if (node) {
+      editor.chain().focus().deleteRange({
+        from: mathEditorData.pos,
+        to: mathEditorData.pos + node.nodeSize,
+      }).run();
+    }
+    setShowMathEditor(false);
+    setMathEditorData(null);
+  };
 
   // 当切换文档时，更新编辑器内容
   useEffect(() => {
@@ -217,6 +292,31 @@ function App() {
             title="删除线"
           >
             <StrikeIcon />
+          </ToolbarButton>
+        </div>
+
+        <Divider />
+
+        <div className="toolbar-section">
+          <ToolbarButton
+            onClick={() => {
+              setMathEditorData({ type: 'inlineMath', latex: '' });
+              setShowMathEditor(true);
+            }}
+            isActive={editor.isActive('inlineMath')}
+            title="行内公式 (Ctrl+M)"
+          >
+            <MathIcon />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={() => {
+              setMathEditorData({ type: 'blockMath', latex: '' });
+              setShowMathEditor(true);
+            }}
+            isActive={editor.isActive('blockMath')}
+            title="块级公式 (Ctrl+Shift+M)"
+          >
+            <MathBlockIcon />
           </ToolbarButton>
         </div>
 
@@ -370,6 +470,29 @@ function App() {
           </div>
         </div>
       </EditorLayout>
+
+      {/* 数学公式编辑器弹窗 */}
+      {showMathEditor && (
+        <div 
+          className="modal-overlay" 
+          onMouseDown={(e) => {
+            // 只有点击overlay本身才关闭，点击子元素不关闭
+            if (e.target === e.currentTarget) {
+              setShowMathEditor(false);
+            }
+          }}
+        >
+          <div className="modal-content">
+            <MathEditor
+              initialValue={mathEditorData?.latex || ''}
+              type={mathEditorData?.type || 'inlineMath'}
+              onConfirm={handleMathConfirm}
+              onCancel={() => setShowMathEditor(false)}
+              onDelete={mathEditorData?.pos !== undefined ? handleMathDelete : undefined}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

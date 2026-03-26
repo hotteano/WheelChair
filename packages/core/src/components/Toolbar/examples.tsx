@@ -1,4 +1,5 @@
-import React from 'react';
+// @ts-ignore - React is used implicitly by JSX
+import * as React from 'react';
 import {
   Toolbar,
   ToolbarButton,

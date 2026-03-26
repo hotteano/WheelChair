@@ -1,16 +1,39 @@
 import type { EditorState } from '@tiptap/pm/state';
-import { 
-  HistoryManager as IHistoryManager, 
-  HistoryManagerOptions, 
-  HistoryEntry, 
-  HistoryState,
-  EditorSelection 
-} from '../types';
+import type { Node as PMNode } from '@tiptap/pm/model';
+
+export interface EditorSelection {
+  from: number;
+  to: number;
+  empty: boolean;
+  anchor: number;
+  head: number;
+}
+
+export interface HistoryEntry {
+  doc: PMNode;
+  selection: EditorSelection;
+  timestamp: number;
+  label?: string;
+}
+
+export interface HistoryState {
+  canUndo: boolean;
+  canRedo: boolean;
+  undoDepth: number;
+  redoDepth: number;
+}
+
+export interface HistoryManagerOptions {
+  maxDepth?: number;
+  mergeWindow?: number;
+  ignoreTransaction?: (tr: any) => boolean;
+  getTransactionLabel?: (tr: any) => string | undefined;
+}
 
 /**
  * 默认配置
  */
-const DEFAULT_OPTIONS: Required<Omit<HistoryManagerOptions, 'ignoreTransaction' | 'getTransactionLabel'>> = {
+const DEFAULT_OPTIONS: { maxDepth: number; mergeWindow: number } = {
   maxDepth: 100,
   mergeWindow: 500,
 };
@@ -33,7 +56,7 @@ function getSelectionFromState(state: EditorState): EditorSelection {
  * 历史管理器
  * 管理编辑器的撤销/重做历史
  */
-export class HistoryManager implements IHistoryManager {
+export class HistoryManager {
   /** 撤销栈 */
   private undoStack: HistoryEntry[] = [];
   /** 重做栈 */

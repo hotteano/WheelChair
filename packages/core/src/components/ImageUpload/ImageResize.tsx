@@ -37,10 +37,10 @@ export const ImageResize: React.FC<ImageResizeProps> = ({
   const [isResizing, setIsResizing] = useState(false);
   const [currentSize, setCurrentSize] = useState({
     width: initialWidth,
-    height: initialHeight,
+    height: initialHeight || 0,
   });
   const startPosRef = useRef({ x: 0, y: 0 });
-  const startSizeRef = useRef({ width: initialWidth, height: initialHeight });
+  const startSizeRef = useRef({ width: initialWidth, height: initialHeight || 0 });
   const aspectRatioRef = useRef<number | null>(
     initialWidth && initialHeight ? initialWidth / initialHeight : null
   );
@@ -50,7 +50,7 @@ export const ImageResize: React.FC<ImageResizeProps> = ({
   useEffect(() => {
     if (!editor || nodePos === undefined) return;
 
-    const element = editor.view.nodeDOM(nodePos) as HTMLElement;
+    const element = editor.view.nodeDOM(nodePos) as HTMLElement | null;
     if (element) {
       const img = element.tagName === 'IMG' 
         ? element as HTMLImageElement
@@ -74,7 +74,7 @@ export const ImageResize: React.FC<ImageResizeProps> = ({
   useEffect(() => {
     setCurrentSize({
       width: initialWidth,
-      height: initialHeight,
+      height: initialHeight || 0,
     });
     if (initialWidth && initialHeight) {
       aspectRatioRef.current = initialWidth / initialHeight;
@@ -119,7 +119,7 @@ export const ImageResize: React.FC<ImageResizeProps> = ({
             }
             break;
           case 's': // 下边
-            newHeight = Math.max(0, startSizeRef.current.height + deltaY);
+            newHeight = Math.max(0, (startSizeRef.current.height || 0) + deltaY);
             if (preserveAspectRatio && aspectRatioRef.current) {
               newWidth = newHeight * aspectRatioRef.current;
             }
@@ -132,14 +132,14 @@ export const ImageResize: React.FC<ImageResizeProps> = ({
             break;
           case 'ne': // 右上角
             newWidth = Math.max(minWidth, Math.min(maxWidth, startSizeRef.current.width + deltaX));
-            newHeight = Math.max(0, startSizeRef.current.height - deltaY);
+            newHeight = Math.max(0, (startSizeRef.current.height || 0) - deltaY);
             if (preserveAspectRatio && aspectRatioRef.current) {
               newHeight = newWidth / aspectRatioRef.current;
             }
             break;
           case 'nw': // 左上角
             newWidth = Math.max(minWidth, Math.min(maxWidth, startSizeRef.current.width - deltaX));
-            newHeight = Math.max(0, startSizeRef.current.height - deltaY);
+            newHeight = Math.max(0, (startSizeRef.current.height || 0) - deltaY);
             if (preserveAspectRatio && aspectRatioRef.current) {
               newHeight = newWidth / aspectRatioRef.current;
             }
@@ -159,7 +159,7 @@ export const ImageResize: React.FC<ImageResizeProps> = ({
 
       const handleUp = () => {
         setIsResizing(false);
-        onResizeEnd?.(currentSize.width, currentSize.height);
+        onResizeEnd?.(currentSize.width, currentSize.height || 0);
         document.removeEventListener('mousemove', handleMove);
         document.removeEventListener('mouseup', handleUp);
         document.removeEventListener('touchmove', handleMove);
@@ -213,7 +213,7 @@ export const ImageResize: React.FC<ImageResizeProps> = ({
         .updateAttributes('image', { width: newWidth, height: newHeight })
         .run();
 
-      onResizeEnd?.(newWidth, newHeight);
+      onResizeEnd?.(newWidth, newHeight || 0);
     },
     [currentSize, editor, nodePos, preserveAspectRatio, onResizeEnd]
   );

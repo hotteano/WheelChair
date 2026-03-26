@@ -70,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   // 处理新建文档
   const handleCreateDocument = useCallback(() => {
-    const newDoc = createDocument();
+    createDocument();
     // 自动聚焦到新文档的标题编辑（在 DocumentItem 中处理）
   }, [createDocument]);
 

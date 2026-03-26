@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { BubbleMenu } from './';
 
 /**
@@ -50,7 +50,7 @@ export function BasicBubbleMenuExample() {
         visible={visible}
         buttons={buttons}
         containerRef={containerRef}
-        position={{ top: 50, left: 100 }}
+        offset={{ x: 100, y: 50 }}
       />
       <button
         onClick={() => setVisible(!visible)}
@@ -81,7 +81,7 @@ export function LinkEditBubbleMenuExample() {
         linkMode={linkMode}
         currentLinkUrl={currentUrl}
         containerRef={containerRef}
-        position={{ top: 50, left: 100 }}
+        offset={{ x: 100, y: 50 }}
         onLinkSave={(url) => {
           console.log('保存链接:', url);
           setCurrentUrl(url);

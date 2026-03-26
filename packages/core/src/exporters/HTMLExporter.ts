@@ -4,7 +4,8 @@
  */
 
 import type { Node } from '../model/node';
-import type { ExportFormat, ExportOptions } from '../utils/importExport';
+import { ExportFormat } from '../utils/importExport';
+import type { ExportOptions } from '../utils/importExport';
 import { HTMLSerializer } from '../utils/html';
 
 export interface HTMLExportOptions extends ExportOptions {

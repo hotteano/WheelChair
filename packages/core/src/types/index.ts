@@ -283,6 +283,13 @@ export type {
 export { ExportFormat } from '../utils/importExport';
 
 // ============================================
+// 组件类型导出
+// ============================================
+
+export type { ToolbarButtonProps as ToolbarButton } from '../components/Toolbar/ToolbarButton';
+export type { ToolbarDropdownProps as ToolbarDropdown } from '../components/Toolbar/ToolbarDropdown';
+
+// ============================================
 // React 导入
 // ============================================
 

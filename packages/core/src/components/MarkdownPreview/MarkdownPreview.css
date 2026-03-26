@@ -1,0 +1,319 @@
+/**
+ * WheelChair Editor - Markdown Preview Styles
+ * Markdown 预览样式
+ */
+
+/* ============================================
+   基础容器
+   ============================================ */
+
+.wch-markdown-preview {
+  height: 100%;
+  overflow: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+}
+
+.wch-markdown-preview--light {
+  --preview-bg: #ffffff;
+  --preview-text: #1a1a1a;
+  --preview-heading: #111111;
+  --preview-link: #0366d6;
+  --preview-code-bg: #f6f8fa;
+  --preview-blockquote-bg: #f0f4f8;
+  --preview-border: #e1e4e8;
+}
+
+.wch-markdown-preview--dark {
+  --preview-bg: #0d1117;
+  --preview-text: #c9d1d9;
+  --preview-heading: #f0f6fc;
+  --preview-link: #58a6ff;
+  --preview-code-bg: #161b22;
+  --preview-blockquote-bg: #1c2128;
+  --preview-border: #30363d;
+}
+
+.wch-markdown-preview__content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ============================================
+   段落和文本
+   ============================================ */
+
+.wch-markdown-preview p {
+  margin: 0 0 1rem 0;
+  line-height: 1.8;
+}
+
+.wch-markdown-preview p:last-child {
+  margin-bottom: 0;
+}
+
+.wch-markdown-preview .empty-placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 3rem 0;
+}
+
+/* ============================================
+   标题
+   ============================================ */
+
+.wch-markdown-preview h1,
+.wch-markdown-preview h2,
+.wch-markdown-preview h3,
+.wch-markdown-preview h4,
+.wch-markdown-preview h5,
+.wch-markdown-preview h6 {
+  color: var(--preview-heading);
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.3rem;
+}
+
+.wch-markdown-preview h1 {
+  font-size: 2rem;
+  border-bottom: 1px solid var(--preview-border);
+  padding-bottom: 0.5rem;
+}
+
+.wch-markdown-preview h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--preview-border);
+}
+
+.wch-markdown-preview h3 {
+  font-size: 1.25rem;
+}
+
+.wch-markdown-preview h4 {
+  font-size: 1rem;
+}
+
+.wch-markdown-preview h5 {
+  font-size: 0.875rem;
+}
+
+.wch-markdown-preview h6 {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ============================================
+   链接
+   ============================================ */
+
+.wch-markdown-preview a {
+  color: var(--preview-link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.wch-markdown-preview a:hover {
+  border-bottom-color: var(--preview-link);
+}
+
+/* ============================================
+   代码
+   ============================================ */
+
+.wch-markdown-preview .inline-code {
+  padding: 0.2em 0.4em;
+  margin: 0 0.2em;
+  font-family: 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875em;
+  background: var(--preview-code-bg);
+  border-radius: 3px;
+  color: var(--preview-text);
+}
+
+.wch-markdown-preview .code-block {
+  margin: 1rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  background: var(--preview-code-bg);
+  border-radius: 6px;
+  border: 1px solid var(--preview-border);
+}
+
+.wch-markdown-preview .code-block code {
+  font-family: 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--preview-text);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* ============================================
+   列表
+   ============================================ */
+
+.wch-markdown-preview ul,
+.wch-markdown-preview ol {
+  margin: 0 0 1rem 0;
+  padding-left: 2rem;
+}
+
+.wch-markdown-preview ul {
+  list-style-type: disc;
+}
+
+.wch-markdown-preview ol {
+  list-style-type: decimal;
+}
+
+.wch-markdown-preview li {
+  margin: 0.25rem 0;
+}
+
+.wch-markdown-preview li > p {
+  margin: 0;
+}
+
+/* ============================================
+   引用块
+   ============================================ */
+
+.wch-markdown-preview blockquote {
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 1rem;
+  background: var(--preview-blockquote-bg);
+  border-left: 4px solid var(--preview-link);
+  border-radius: 0 4px 4px 0;
+  color: var(--text-secondary);
+}
+
+.wch-markdown-preview blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   图片
+   ============================================ */
+
+.wch-markdown-preview img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   水平分割线
+   ============================================ */
+
+.wch-markdown-preview hr {
+  margin: 1.5rem 0;
+  border: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--preview-border), transparent);
+}
+
+/* ============================================
+   强调文本
+   ============================================ */
+
+.wch-markdown-preview strong {
+  font-weight: 600;
+  color: var(--preview-heading);
+}
+
+.wch-markdown-preview em {
+  font-style: italic;
+}
+
+.wch-markdown-preview del {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* ============================================
+   表格（基础支持）
+   ============================================ */
+
+.wch-markdown-preview table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
+}
+
+.wch-markdown-preview th,
+.wch-markdown-preview td {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--preview-border);
+  text-align: left;
+}
+
+.wch-markdown-preview th {
+  background: var(--preview-code-bg);
+  font-weight: 600;
+}
+
+/* ============================================
+   任务列表
+   ============================================ */
+
+.wch-markdown-preview input[type="checkbox"] {
+  margin-right: 0.5rem;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   滚动条
+   ============================================ */
+
+.wch-markdown-preview::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.wch-markdown-preview::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wch-markdown-preview::-webkit-scrollbar-thumb {
+  background: var(--preview-border);
+  border-radius: 4px;
+}
+
+.wch-markdown-preview::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ============================================
+   响应式
+   ============================================ */
+
+@media (max-width: 768px) {
+  .wch-markdown-preview__content {
+    padding: 1rem;
+  }
+  
+  .wch-markdown-preview h1 {
+    font-size: 1.5rem;
+  }
+  
+  .wch-markdown-preview h2 {
+    font-size: 1.25rem;
+  }
+  
+  .wch-markdown-preview h3 {
+    font-size: 1.1rem;
+  }
+}

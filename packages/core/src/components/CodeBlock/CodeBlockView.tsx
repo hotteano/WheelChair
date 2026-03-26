@@ -11,7 +11,7 @@ import { LanguageSelector } from './LanguageSelector';
 import './code-block.css';
 
 // 动态导入 highlight.js
-let hljs: typeof import('highlight.js') | null = null;
+let hljs: import('highlight.js').HLJSApi | null = null;
 
 // 动态导入语言
 const importLanguage = async (lang: string) => {
@@ -67,7 +67,7 @@ export const CodeBlockView: React.FC<NodeViewProps> = ({
   const { language, showLineNumbers } = node.attrs;
   const [copied, setCopied] = useState(false);
   const [highlightedCode, setHighlightedCode] = useState('');
-  const [isHighlighting, setIsHighlighting] = useState(false);
+  const [_isHighlighting, setIsHighlighting] = useState(false);
   const codeRef = useRef<HTMLElement>(null);
 
   // 获取纯文本内容
@@ -107,7 +107,7 @@ export const CodeBlockView: React.FC<NodeViewProps> = ({
         
         const code = getTextContent();
         if (code) {
-          const result = hljs.highlight(code, { language });
+          const result = hljs.highlight(code, { language: language || 'plain' });
           setHighlightedCode(result.value);
         } else {
           setHighlightedCode('');
@@ -121,11 +121,12 @@ export const CodeBlockView: React.FC<NodeViewProps> = ({
     };
 
     highlight();
-  }, [language, node.textContent, getTextContent]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, node.textContent]);
 
   // 处理语言变更
   const handleLanguageChange = useCallback((newLanguage: SupportedLanguage | null) => {
-    updateAttributes({ language: newLanguage });
+    updateAttributes({ language: newLanguage || 'plain' });
   }, [updateAttributes]);
 
   // 处理复制

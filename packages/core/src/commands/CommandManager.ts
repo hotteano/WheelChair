@@ -304,7 +304,7 @@ export class CommandManager {
     command: Command,
     args: any[],
     result: CommandResult,
-    context: CommandContext
+    _context: CommandContext
   ): void {
     const historyOptions = this.options.history!;
     const now = Date.now();
@@ -371,7 +371,7 @@ export class CommandManager {
 
     try {
       const historyItem = this.history[this.historyIndex];
-      const { command, args, result } = historyItem;
+      const { command, args: _args, result } = historyItem;
 
       let undoResult: CommandResult;
 

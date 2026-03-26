@@ -265,13 +265,13 @@ export const SlashMenu: React.FC<SlashMenuProps> = ({
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex((prev) => 
-            prev < flatCommands.length - 1 ? prev + 1 : prev
-          );
+          const nextIndex = selectedIndex < flatCommands.length - 1 ? selectedIndex + 1 : selectedIndex;
+          setInternalSelectedIndex(nextIndex);
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+          const prevIndex = selectedIndex > 0 ? selectedIndex - 1 : selectedIndex;
+          setInternalSelectedIndex(prevIndex);
           break;
         case 'Enter':
           e.preventDefault();
@@ -388,7 +388,7 @@ export const SlashMenu: React.FC<SlashMenuProps> = ({
                       role="option"
                       aria-selected={isSelected}
                       onClick={() => handleCommandSelect(command)}
-                      onMouseEnter={() => setSelectedIndex(index)}
+                      onMouseEnter={() => setInternalSelectedIndex(index)}
                       className={cn(
                         'flex items-center gap-3 px-3 py-2 mx-1 rounded-md cursor-pointer',
                         'transition-colors duration-100',

@@ -17,9 +17,9 @@ export const CutCommand: Command = {
   undoable: true,
 
   execute(context: CommandContext): CommandResult {
-    const selection = context.getSelection();
+    const _selection = context.getSelection();
     
-    if (!selection || selection.isCollapsed) {
+    if (!_selection || _selection.isCollapsed) {
       return {
         success: false,
         message: '请先选中文本',
@@ -40,7 +40,7 @@ export const CutCommand: Command = {
     }
 
     // 保存选中的内容用于撤销
-    const range = selection.getRangeAt(0).cloneRange();
+    const range = _selection.getRangeAt(0).cloneRange();
 
     // 删除选中的内容
     context.deleteSelection();
@@ -52,9 +52,9 @@ export const CutCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { text: string; range: Range }): CommandResult {
+  undo(_context: CommandContext, undoData: { text: string; range: Range }): CommandResult {
     // 恢复剪切的内容
-    context.insertText(undoData.text);
+    _context.insertText(undoData.text);
 
     return {
       success: true,
@@ -63,8 +63,8 @@ export const CutCommand: Command = {
   },
 
   isEnabled(context: CommandContext): boolean {
-    const selection = context.getSelection();
-    return selection !== null && !selection.isCollapsed;
+    const _selection = context.getSelection();
+    return _selection !== null && !_selection.isCollapsed;
   },
 };
 
@@ -79,9 +79,9 @@ export const CopyCommand: Command = {
   undoable: false, // 复制不需要撤销
 
   execute(context: CommandContext): CommandResult {
-    const selection = context.getSelection();
+    const _selection = context.getSelection();
     
-    if (!selection || selection.isCollapsed) {
+    if (!_selection || _selection.isCollapsed) {
       return {
         success: false,
         message: '请先选中文本',
@@ -106,8 +106,8 @@ export const CopyCommand: Command = {
   },
 
   isEnabled(context: CommandContext): boolean {
-    const selection = context.getSelection();
-    return selection !== null && !selection.isCollapsed;
+    const _selection = context.getSelection();
+    return _selection !== null && !_selection.isCollapsed;
   },
 };
 
@@ -127,7 +127,6 @@ export const PasteCommand: Command = {
       const text = await navigator.clipboard.readText();
       
       // 保存当前选区用于撤销
-      const selection = context.getSelection();
       const previousText = context.getSelectedText();
 
       // 粘贴内容
@@ -150,11 +149,11 @@ export const PasteCommand: Command = {
     }
   },
 
-  undo(context: CommandContext, undoData: { previousText: string; pastedText: string }): CommandResult {
+  undo(_context: CommandContext, undoData: { previousText: string; pastedText: string }): CommandResult {
     // 移除粘贴的内容，恢复之前的内容
-    context.deleteSelection();
+    _context.deleteSelection();
     if (undoData.previousText) {
-      context.insertText(undoData.previousText);
+      _context.insertText(undoData.previousText);
     }
 
     return {

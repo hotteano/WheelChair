@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import type { Node } from '../../model/node';
-import type { ExportFormat, ExportOptions } from '../../utils/importExport';
+import type { ExportFormat } from '../../utils/importExport';
 import { ExportFormat as ExportFormatEnum } from '../../utils/importExport';
 
 // 导出器
@@ -107,7 +107,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
   // 点击外部关闭菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (menuRef.current && !menuRef.current.contains(event.target as globalThis.Node)) {
         setIsOpen(false);
         onClose?.();
       }
@@ -146,7 +146,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
       metadata: title ? { title } : undefined,
       ...options,
     });
-    return exporter.export(nodes, options);
+    return exporter.export(nodes);
   }, [nodes, title]);
 
   // 导出为 HTML
@@ -157,7 +157,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
       syntaxHighlight: true,
       ...options,
     });
-    return exporter.export(nodes, options);
+    return exporter.export(nodes);
   }, [nodes, title]);
 
   // 导出为 JSON
@@ -168,7 +168,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
       includeVersion: true,
       ...options,
     });
-    return exporter.export(nodes, options);
+    return exporter.export(nodes);
   }, [nodes, title]);
 
   // 导出为纯文本
@@ -178,7 +178,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
       paragraphSpacing: true,
       ...options,
     });
-    return exporter.export(nodes, options);
+    return exporter.export(nodes);
   }, [nodes]);
 
   // 处理导出

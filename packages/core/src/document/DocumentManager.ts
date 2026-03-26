@@ -13,9 +13,9 @@ import type {
   PersistedDocuments,
   DocumentEventMap,
   DocumentEventListener,
-  ExportFormat,
   ExportOptions,
 } from './types';
+import { ExportFormat } from './types';
 
 // ============================================
 // 默认配置

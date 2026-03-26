@@ -1,7 +1,9 @@
 import { useState, useCallback, useRef } from 'react';
 import type { ImageUploadOptions, UploadState } from '../../types/upload';
 
-export interface UseImageUploadOptions extends Partial<ImageUploadOptions> {
+export interface UseImageUploadOptions extends Partial<Omit<ImageUploadOptions, 'onUpload' | 'onError'>> {
+  /** 上传处理函数，返回图片 URL */
+  onUpload?: (file: File) => Promise<string>;
   /** 多个文件上传 */
   multiple?: boolean;
   /** 上传前处理 */
@@ -158,12 +160,12 @@ export function useImageUpload(
     setIsDragging(true);
   }, []);
 
-  // 处理拖拽离开
-  const handleDragLeave = useCallback((event: React.DragEvent) => {
+  // 处理拖拽离开 (内部使用)
+  void ((event: React.DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     setIsDragging(false);
-  }, []);
+  });
 
   // 处理粘贴
   const handlePaste = useCallback(

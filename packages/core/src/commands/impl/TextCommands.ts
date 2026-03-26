@@ -25,13 +25,13 @@ function createTextFormatCommand(
     category: CommandCategory.TEXT_FORMAT,
     undoable: true,
 
-    execute(context: CommandContext): CommandResult {
-      const hasFormat = context.hasFormat(format);
+    execute(_context: CommandContext): CommandResult {
+      const hasFormat = _context.hasFormat(format);
       
       if (hasFormat) {
-        context.removeFormat(format);
+        _context.removeFormat(format);
       } else {
-        context.applyFormat(format);
+        _context.applyFormat(format);
       }
 
       return {
@@ -41,11 +41,11 @@ function createTextFormatCommand(
       };
     },
 
-    undo(context: CommandContext, undoData: { format: TextFormat; wasActive: boolean }): CommandResult {
+    undo(_context: CommandContext, undoData: { format: TextFormat; wasActive: boolean }): CommandResult {
       if (undoData.wasActive) {
-        context.applyFormat(undoData.format);
+        _context.applyFormat(undoData.format);
       } else {
-        context.removeFormat(undoData.format);
+        _context.removeFormat(undoData.format);
       }
 
       return {
@@ -54,14 +54,14 @@ function createTextFormatCommand(
       };
     },
 
-    isActive(context: CommandContext): boolean {
-      return context.hasFormat(format);
+    isActive(_context: CommandContext): boolean {
+      return _context.hasFormat(format);
     },
 
-    isEnabled(context: CommandContext): boolean {
+    isEnabled(_context: CommandContext): boolean {
       // 检查是否有选区
-      const selection = context.getSelection();
-      return selection !== null && !selection.isCollapsed;
+      const _selection = _context.getSelection();
+      return _selection !== null && !_selection.isCollapsed;
     },
   };
 }
@@ -139,9 +139,9 @@ export const LinkCommand: Command = {
   category: CommandCategory.TEXT_FORMAT,
   undoable: true,
 
-  execute(context: CommandContext, url?: string, text?: string): CommandResult {
-    const selection = context.getSelection();
-    const selectedText = context.getSelectedText();
+  execute(_context: CommandContext, url?: string, text?: string): CommandResult {
+    const _selection = _context.getSelection();
+    const selectedText = _context.getSelectedText();
     
     // 如果没有选中文本，使用传入的文本或链接地址
     const linkText = selectedText || text || url || '';
@@ -156,28 +156,28 @@ export const LinkCommand: Command = {
     const linkUrl = url || 'https://';
 
     // 应用链接格式
-    context.applyFormat(TextFormat.LINK, { url: linkUrl, text: linkText });
+    _context.applyFormat(TextFormat.LINK, { url: linkUrl, text: linkText });
 
     return {
       success: true,
-      undoData: { url: linkUrl, text: linkText, previousSelection: selection?.toString() },
+      undoData: { url: linkUrl, text: linkText, previousSelection: _selection?.toString() },
       stateChanged: true,
     };
   },
 
-  undo(context: CommandContext, undoData: any): CommandResult {
-    context.removeFormat(TextFormat.LINK);
+  undo(_context: CommandContext, _undoData: any): CommandResult {
+    _context.removeFormat(TextFormat.LINK);
     return {
       success: true,
       stateChanged: true,
     };
   },
 
-  isActive(context: CommandContext): boolean {
-    return context.hasFormat(TextFormat.LINK);
+  isActive(_context: CommandContext): boolean {
+    return _context.hasFormat(TextFormat.LINK);
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };
@@ -192,10 +192,10 @@ export const RemoveFormatCommand: Command = {
   category: CommandCategory.TEXT_FORMAT,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const selection = context.getSelection();
+  execute(_context: CommandContext): CommandResult {
+    const _selection = _context.getSelection();
     
-    if (!selection || selection.isCollapsed) {
+    if (!_selection || _selection.isCollapsed) {
       return {
         success: false,
         message: '请先选中文本',
@@ -204,21 +204,21 @@ export const RemoveFormatCommand: Command = {
 
     // 保存之前的格式信息用于撤销
     const beforeState = {
-      selection: selection.toString(),
+      selection: _selection.toString(),
       formats: [] as TextFormat[],
     };
 
     // 获取所有格式
     const allFormats = Object.values(TextFormat);
     for (const format of allFormats) {
-      if (context.hasFormat(format)) {
+      if (_context.hasFormat(format)) {
         beforeState.formats.push(format);
       }
     }
 
     // 移除所有格式
     for (const format of beforeState.formats) {
-      context.removeFormat(format);
+      _context.removeFormat(format);
     }
 
     return {
@@ -228,10 +228,10 @@ export const RemoveFormatCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { formats: TextFormat[]; selection: string }): CommandResult {
+  undo(_context: CommandContext, undoData: { formats: TextFormat[]; selection: string }): CommandResult {
     // 恢复之前的格式
     for (const format of undoData.formats) {
-      context.applyFormat(format);
+      _context.applyFormat(format);
     }
 
     return {
@@ -240,9 +240,9 @@ export const RemoveFormatCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    const selection = context.getSelection();
-    return selection !== null && !selection.isCollapsed;
+  isEnabled(_context: CommandContext): boolean {
+    const _selection = _context.getSelection();
+    return _selection !== null && !_selection.isCollapsed;
   },
 };
 
@@ -256,7 +256,7 @@ export const SetColorCommand: Command = {
   category: CommandCategory.TEXT_FORMAT,
   undoable: true,
 
-  execute(context: CommandContext, color: string): CommandResult {
+  execute(_context: CommandContext, color: string): CommandResult {
     if (!color) {
       return {
         success: false,
@@ -264,10 +264,10 @@ export const SetColorCommand: Command = {
       };
     }
 
-    const previousColor = context.hasFormat(TextFormat.COLOR) ? 
-      context.state.getFormatValue?.(TextFormat.COLOR) : null;
+    const previousColor = _context.hasFormat(TextFormat.COLOR) ? 
+      _context.state.getFormatValue?.(TextFormat.COLOR) : null;
 
-    context.applyFormat(TextFormat.COLOR, color);
+    _context.applyFormat(TextFormat.COLOR, color);
 
     return {
       success: true,
@@ -276,11 +276,11 @@ export const SetColorCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousColor: string | null }): CommandResult {
+  undo(_context: CommandContext, undoData: { previousColor: string | null }): CommandResult {
     if (undoData.previousColor) {
-      context.applyFormat(TextFormat.COLOR, undoData.previousColor);
+      _context.applyFormat(TextFormat.COLOR, undoData.previousColor);
     } else {
-      context.removeFormat(TextFormat.COLOR);
+      _context.removeFormat(TextFormat.COLOR);
     }
 
     return {
@@ -289,7 +289,7 @@ export const SetColorCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };
@@ -304,7 +304,7 @@ export const SetBackgroundColorCommand: Command = {
   category: CommandCategory.TEXT_FORMAT,
   undoable: true,
 
-  execute(context: CommandContext, color: string): CommandResult {
+  execute(_context: CommandContext, color: string): CommandResult {
     if (!color) {
       return {
         success: false,
@@ -312,10 +312,10 @@ export const SetBackgroundColorCommand: Command = {
       };
     }
 
-    const previousColor = context.hasFormat(TextFormat.BACKGROUND_COLOR) ? 
-      context.state.getFormatValue?.(TextFormat.BACKGROUND_COLOR) : null;
+    const previousColor = _context.hasFormat(TextFormat.BACKGROUND_COLOR) ? 
+      _context.state.getFormatValue?.(TextFormat.BACKGROUND_COLOR) : null;
 
-    context.applyFormat(TextFormat.BACKGROUND_COLOR, color);
+    _context.applyFormat(TextFormat.BACKGROUND_COLOR, color);
 
     return {
       success: true,
@@ -324,11 +324,11 @@ export const SetBackgroundColorCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousColor: string | null }): CommandResult {
+  undo(_context: CommandContext, undoData: { previousColor: string | null }): CommandResult {
     if (undoData.previousColor) {
-      context.applyFormat(TextFormat.BACKGROUND_COLOR, undoData.previousColor);
+      _context.applyFormat(TextFormat.BACKGROUND_COLOR, undoData.previousColor);
     } else {
-      context.removeFormat(TextFormat.BACKGROUND_COLOR);
+      _context.removeFormat(TextFormat.BACKGROUND_COLOR);
     }
 
     return {
@@ -337,7 +337,7 @@ export const SetBackgroundColorCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };
@@ -352,7 +352,7 @@ export const SetFontSizeCommand: Command = {
   category: CommandCategory.TEXT_FORMAT,
   undoable: true,
 
-  execute(context: CommandContext, size: string | number): CommandResult {
+  execute(_context: CommandContext, size: string | number): CommandResult {
     if (!size) {
       return {
         success: false,
@@ -361,10 +361,10 @@ export const SetFontSizeCommand: Command = {
     }
 
     const sizeValue = typeof size === 'number' ? `${size}px` : size;
-    const previousSize = context.hasFormat(TextFormat.FONT_SIZE) ? 
-      context.state.getFormatValue?.(TextFormat.FONT_SIZE) : null;
+    const previousSize = _context.hasFormat(TextFormat.FONT_SIZE) ? 
+      _context.state.getFormatValue?.(TextFormat.FONT_SIZE) : null;
 
-    context.applyFormat(TextFormat.FONT_SIZE, sizeValue);
+    _context.applyFormat(TextFormat.FONT_SIZE, sizeValue);
 
     return {
       success: true,
@@ -373,11 +373,11 @@ export const SetFontSizeCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousSize: string | null }): CommandResult {
+  undo(_context: CommandContext, undoData: { previousSize: string | null }): CommandResult {
     if (undoData.previousSize) {
-      context.applyFormat(TextFormat.FONT_SIZE, undoData.previousSize);
+      _context.applyFormat(TextFormat.FONT_SIZE, undoData.previousSize);
     } else {
-      context.removeFormat(TextFormat.FONT_SIZE);
+      _context.removeFormat(TextFormat.FONT_SIZE);
     }
 
     return {
@@ -386,7 +386,7 @@ export const SetFontSizeCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };
@@ -401,13 +401,13 @@ export const HighlightCommand: Command = {
   category: CommandCategory.TEXT_FORMAT,
   undoable: true,
 
-  execute(context: CommandContext, color: string = '#ffeb3b'): CommandResult {
-    const hasHighlight = context.hasFormat(TextFormat.HIGHLIGHT);
+  execute(_context: CommandContext, color: string = '#ffeb3b'): CommandResult {
+    const hasHighlight = _context.hasFormat(TextFormat.HIGHLIGHT);
 
     if (hasHighlight) {
-      context.removeFormat(TextFormat.HIGHLIGHT);
+      _context.removeFormat(TextFormat.HIGHLIGHT);
     } else {
-      context.applyFormat(TextFormat.HIGHLIGHT, color);
+      _context.applyFormat(TextFormat.HIGHLIGHT, color);
     }
 
     return {
@@ -417,11 +417,11 @@ export const HighlightCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { wasActive: boolean; color: string }): CommandResult {
+  undo(_context: CommandContext, undoData: { wasActive: boolean; color: string }): CommandResult {
     if (undoData.wasActive) {
-      context.applyFormat(TextFormat.HIGHLIGHT, undoData.color);
+      _context.applyFormat(TextFormat.HIGHLIGHT, undoData.color);
     } else {
-      context.removeFormat(TextFormat.HIGHLIGHT);
+      _context.removeFormat(TextFormat.HIGHLIGHT);
     }
 
     return {
@@ -430,11 +430,11 @@ export const HighlightCommand: Command = {
     };
   },
 
-  isActive(context: CommandContext): boolean {
-    return context.hasFormat(TextFormat.HIGHLIGHT);
+  isActive(_context: CommandContext): boolean {
+    return _context.hasFormat(TextFormat.HIGHLIGHT);
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };

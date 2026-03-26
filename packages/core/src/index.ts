@@ -69,4 +69,4 @@ export type { WCImportOptions, WCImportResult } from './importers/WCImporter';
 // ============================================
 // 版本信息
 // ============================================
-export const VERSION = '0.1.0';
+export const VERSION = '1.0.1';

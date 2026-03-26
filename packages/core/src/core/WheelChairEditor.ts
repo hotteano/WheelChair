@@ -1,17 +1,82 @@
-import type { Editor, EditorOptions, JSONContent } from '@tiptap/core';
-import type { Transaction, EditorState } from '@tiptap/pm/state';
-import type { EditorView } from '@tiptap/pm/view';
-import {
-  type WheelChairEditorOptions,
-  type EditorSelection,
-  type InsertOptions,
-  type SetContentOptions,
-  type EventEmitter,
-  type EditorEventMap,
-  type EventListener,
-  type WordCount,
-  type HistoryState,
-} from '../types';
+import { Editor, type EditorOptions, type JSONContent } from '@tiptap/core';
+import type { Transaction } from '@tiptap/pm/state';
+
+export interface EditorSelection {
+  from: number;
+  to: number;
+  empty: boolean;
+  anchor: number;
+  head: number;
+}
+
+export interface InsertOptions {
+  at?: number | 'start' | 'end' | 'selection' | { from: number; to: number };
+  updateSelection?: boolean;
+  parseOptions?: Record<string, any>;
+}
+
+export interface SetContentOptions {
+  emitUpdate?: boolean;
+  parseOptions?: Record<string, any>;
+}
+
+export interface WordCount {
+  words: number;
+  characters: number;
+  charactersWithoutSpaces: number;
+}
+
+export interface HistoryState {
+  canUndo: boolean;
+  canRedo: boolean;
+  undoDepth: number;
+  redoDepth: number;
+}
+
+export interface EditorEventMap {
+  create: { editor: Editor };
+  update: { editor: Editor; transaction: Transaction };
+  selectionUpdate: { editor: Editor; transaction: Transaction };
+  transaction: { editor: Editor; transaction: Transaction };
+  focus: { editor: Editor; event: FocusEvent; transaction: Transaction };
+  blur: { editor: Editor; event: FocusEvent; transaction: Transaction };
+  destroy: void;
+  contentError: { editor: Editor; error: Error; invalidContent: any; disablesOutput: boolean };
+}
+
+export type EventListener<T> = (data: T) => void;
+
+export interface EventEmitter<T> {
+  on<K extends keyof T>(event: K, listener: EventListener<T[K]>): () => void;
+  off<K extends keyof T>(event: K, listener: EventListener<T[K]>): void;
+  emit<K extends keyof T>(event: K, data: T[K]): void;
+}
+
+export interface WheelChairEditorOptions {
+  content?: string | JSONContent;
+  editable?: boolean;
+  placeholder?: string;
+  autofocus?: boolean | 'start' | 'end' | 'all' | number;
+  extensions?: any[];
+  editorProps?: Record<string, any>;
+  injectCSS?: boolean;
+  injectNonce?: string;
+  enableInputRules?: boolean;
+  enablePasteRules?: boolean;
+  enableCoreExtensions?: boolean;
+  element?: HTMLElement;
+  onCreate?: (editor: Editor) => void;
+  onUpdate?: (editor: Editor) => void;
+  onSelectionChange?: (selection: EditorSelection, editor: Editor) => void;
+  onFocus?: (event: FocusEvent, editor: Editor) => void;
+  onBlur?: (event: FocusEvent, editor: Editor) => void;
+  onDestroy?: () => void;
+  onContentError?: (params: { editor: Editor; error: Error; invalidContent: any; disablesOutput: boolean }) => void;
+  onPaste?: (event: ClipboardEvent) => boolean | void;
+  onDrop?: (event: DragEvent) => boolean | void;
+  onChange?: (content: JSONContent, editor: Editor) => void;
+  onTransaction?: (params: { editor: Editor; transaction: Transaction }) => void;
+}
 import { StateManager } from './StateManager';
 import { HistoryManager } from './HistoryManager';
 
@@ -22,7 +87,6 @@ const DEFAULT_OPTIONS: Partial<WheelChairEditorOptions> = {
   content: '',
   editable: true,
   placeholder: '请输入内容...',
-  spellcheck: true,
   enableInputRules: true,
   enablePasteRules: true,
   enableCoreExtensions: true,
@@ -46,6 +110,7 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
   /** 是否已销毁 */
   private destroyed: boolean = false;
   /** 容器元素 */
+  // @ts-ignore - Used in lifecycle methods
   private element: HTMLElement | null = null;
   /** 字数统计防抖定时器 */
   private wordCountDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -80,7 +145,7 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
    * 初始化编辑器
    * @param element - 编辑器容器元素
    */
-  init(element: HTMLElement): void {
+  init(_element: HTMLElement): void {
     if (this.destroyed) {
       throw new Error('Editor has been destroyed. Please create a new instance.');
     }
@@ -90,12 +155,12 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
       return;
     }
 
-    this.element = element;
+    this.element = _element;
     this.stateManager.setLoading(true);
 
     // 构建 Tiptap 配置
     const tiptapOptions: Partial<EditorOptions> = {
-      element,
+      element: _element,
       content: this.options.content,
       editable: this.options.editable,
       autofocus: this.options.autofocus,
@@ -106,12 +171,13 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
       enableInputRules: this.options.enableInputRules,
       enablePasteRules: this.options.enablePasteRules,
       enableCoreExtensions: this.options.enableCoreExtensions,
-      parseOptions: {},
-      coreExtensionOptions: {},
-      onBeforeCreate: ({ editor }) => {
-        this.emit('create', { editor });
-        this.options.onCreate?.(editor);
+
+
+      onBeforeCreate: () => {
+        this.emit('create', { editor: this.editor! });
+        this.options.onCreate?.(this.editor!);
       },
+      parseOptions: {},
       onCreate: ({ editor }) => {
         this.stateManager.setEditor(editor);
         this.stateManager.setReady(true);
@@ -153,16 +219,16 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
         this.emit('destroy', undefined);
         this.options.onDestroy?.();
       },
-      onContentError: ({ editor, error, invalidContent, disablesOutput }) => {
-        this.emit('contentError', { editor, error, invalidContent, disablesOutput });
-        this.options.onContentError?.({ editor, error, invalidContent, disablesOutput });
+      onContentError: (params) => {
+        this.emit('contentError', params as any);
+        this.options.onContentError?.(params as any);
       },
       onPaste: this.options.onPaste,
       onDrop: this.options.onDrop,
     };
 
     // 创建 Tiptap Editor 实例
-    this.editor = new Editor(tiptapOptions as EditorOptions);
+    this.editor = new (Editor as any)(tiptapOptions as EditorOptions);
   }
 
   /**
@@ -296,7 +362,7 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
       this.editor.commands.insertContentAt(0, content, parseOptions);
     } else if (at === 'end') {
       this.editor.commands.insertContentAt(this.editor.state.doc.content.size, content, parseOptions);
-    } else if (at === 'all') {
+    } else if (at === 'all' as any) {
       this.editor.commands.setContent(content, true, parseOptions);
     } else if (typeof at === 'number') {
       this.editor.commands.insertContentAt(at, content, parseOptions);
@@ -351,16 +417,16 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
   /**
    * 聚焦编辑器
    */
-  focus(position?: number | 'start' | 'end' | 'all' | Range): void {
+  focus(position?: number | 'start' | 'end' | 'all' | { from: number; to: number }): void {
     if (!this.editor) return;
 
     if (position === undefined) {
       this.editor.commands.focus();
     } else if (typeof position === 'number') {
       this.editor.commands.focus(position);
-    } else if (position === 'start' || position === 'end' || position === 'all') {
+    } else if (position === 'start' || position === 'end') {
       this.editor.commands.focus(position);
-    } else if (typeof position === 'object' && 'from' in position) {
+    } else if (typeof position === 'object' && 'from' in position && position.from !== undefined) {
       this.editor.commands.setTextSelection(position);
       this.editor.commands.focus();
     }

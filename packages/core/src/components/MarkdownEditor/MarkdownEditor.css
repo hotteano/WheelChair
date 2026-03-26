@@ -1,0 +1,313 @@
+/**
+ * WheelChair Editor - Markdown Editor Styles
+ * Markdown 编辑器样式
+ */
+
+/* ============================================
+   基础容器
+   ============================================ */
+
+.wch-markdown-editor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.wch-markdown-editor--edit,
+.wch-markdown-editor--preview {
+  overflow: hidden;
+}
+
+.wch-markdown-editor--split {
+  overflow: hidden;
+}
+
+/* ============================================
+   工具栏
+   ============================================ */
+
+.wch-markdown-editor__toolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  gap: 0.5rem;
+}
+
+/* ============================================
+   编辑器区域
+   ============================================ */
+
+.wch-markdown-editor__editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wch-markdown-editor__content {
+  flex: 1;
+  overflow: auto;
+  padding: 1.5rem;
+}
+
+.wch-markdown-editor__content .ProseMirror {
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100%;
+  outline: none;
+}
+
+/* ============================================
+   预览区域
+   ============================================ */
+
+.wch-markdown-editor__preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wch-markdown-editor__preview .wch-markdown-preview {
+  flex: 1;
+}
+
+/* ============================================
+   分栏模式
+   ============================================ */
+
+.wch-markdown-editor__split-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wch-markdown-editor__split-wrapper .wch-split-pane {
+  flex: 1;
+}
+
+.wch-markdown-editor__split-wrapper .wch-split-pane__pane {
+  overflow: auto;
+}
+
+/* ============================================
+   模式切换按钮
+   ============================================ */
+
+.wch-markdown-editor__mode-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.wch-markdown-editor__mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wch-markdown-editor__mode-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.wch-markdown-editor__mode-btn.is-active {
+  color: var(--primary-color);
+  background: var(--primary-bg);
+}
+
+.wch-markdown-editor__mode-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================
+   状态指示器
+   ============================================ */
+
+.wch-markdown-editor__status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.wch-markdown-editor__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success-color);
+}
+
+.wch-markdown-editor__status-dot.is-dirty {
+  background: var(--warning-color);
+}
+
+/* ============================================
+   字数统计
+   ============================================ */
+
+.wch-markdown-editor__word-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+/* ============================================
+   ProseMirror 编辑器样式覆盖
+   ============================================ */
+
+.wch-markdown-editor__content .ProseMirror p {
+  margin: 0 0 0.75rem 0;
+  line-height: 1.7;
+}
+
+.wch-markdown-editor__content .ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.wch-markdown-editor__content .ProseMirror h1,
+.wch-markdown-editor__content .ProseMirror h2,
+.wch-markdown-editor__content .ProseMirror h3,
+.wch-markdown-editor__content .ProseMirror h4,
+.wch-markdown-editor__content .ProseMirror h5,
+.wch-markdown-editor__content .ProseMirror h6 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.wch-markdown-editor__content .ProseMirror h1 {
+  font-size: 1.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.wch-markdown-editor__content .ProseMirror h2 {
+  font-size: 1.5rem;
+}
+
+.wch-markdown-editor__content .ProseMirror h3 {
+  font-size: 1.25rem;
+}
+
+.wch-markdown-editor__content .ProseMirror ul,
+.wch-markdown-editor__content .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
+}
+
+.wch-markdown-editor__content .ProseMirror li {
+  margin: 0.25rem 0;
+}
+
+.wch-markdown-editor__content .ProseMirror blockquote {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 3px solid var(--primary-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.wch-markdown-editor__content .ProseMirror code {
+  padding: 0.2em 0.4em;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875em;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+}
+
+.wch-markdown-editor__content .ProseMirror pre {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.wch-markdown-editor__content .ProseMirror pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.wch-markdown-editor__content .ProseMirror hr {
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 2px solid var(--border-color);
+}
+
+/* Placeholder */
+.wch-markdown-editor__content .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--text-muted);
+  pointer-events: none;
+  height: 0;
+}
+
+/* ============================================
+   聚焦样式
+   ============================================ */
+
+.wch-markdown-editor__content .ProseMirror-focused {
+  outline: none;
+}
+
+/* ============================================
+   选中样式
+   ============================================ */
+
+.wch-markdown-editor__content .ProseMirror ::selection {
+  background: var(--selection-bg);
+}
+
+/* ============================================
+   滚动条
+   ============================================ */
+
+.wch-markdown-editor__content::-webkit-scrollbar,
+.wch-markdown-editor__preview .wch-markdown-preview::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.wch-markdown-editor__content::-webkit-scrollbar-track,
+.wch-markdown-editor__preview .wch-markdown-preview::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wch-markdown-editor__content::-webkit-scrollbar-thumb,
+.wch-markdown-editor__preview .wch-markdown-preview::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.wch-markdown-editor__content::-webkit-scrollbar-thumb:hover,
+.wch-markdown-editor__preview .wch-markdown-preview::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

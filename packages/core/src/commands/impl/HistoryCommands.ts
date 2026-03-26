@@ -18,8 +18,8 @@ export function createUndoCommand(commandManager: CommandManager): Command {
     category: CommandCategory.HISTORY,
     undoable: false, // 撤销操作本身不需要再撤销
 
-    async execute(context: CommandContext): Promise<CommandResult> {
-      return await commandManager.undo(context);
+    async execute(_context: CommandContext): Promise<CommandResult> {
+      return await commandManager.undo(_context);
     },
 
     isEnabled(): boolean {
@@ -39,8 +39,8 @@ export function createRedoCommand(commandManager: CommandManager): Command {
     category: CommandCategory.HISTORY,
     undoable: false, // 重做操作本身不需要再撤销
 
-    async execute(context: CommandContext): Promise<CommandResult> {
-      return await commandManager.redo(context);
+    async execute(_context: CommandContext): Promise<CommandResult> {
+      return await commandManager.redo(_context);
     },
 
     isEnabled(): boolean {
@@ -88,7 +88,7 @@ export function createUndoMultipleCommand(commandManager: CommandManager): Comma
     category: CommandCategory.HISTORY,
     undoable: false,
 
-    async execute(context: CommandContext, steps: number = 1): Promise<CommandResult> {
+    async execute(_context: CommandContext, steps: number = 1): Promise<CommandResult> {
       const actualSteps = Math.min(steps, commandManager.getHistorySize());
       
       if (actualSteps <= 0) {
@@ -100,7 +100,7 @@ export function createUndoMultipleCommand(commandManager: CommandManager): Comma
 
       let successCount = 0;
       for (let i = 0; i < actualSteps; i++) {
-        const result = await commandManager.undo(context);
+        const result = await commandManager.undo(_context);
         if (result.success) {
           successCount++;
         } else {
@@ -133,7 +133,7 @@ export function createRedoMultipleCommand(commandManager: CommandManager): Comma
     category: CommandCategory.HISTORY,
     undoable: false,
 
-    async execute(context: CommandContext, steps: number = 1): Promise<CommandResult> {
+    async execute(_context: CommandContext, steps: number = 1): Promise<CommandResult> {
       const historySize = commandManager.getHistorySize();
       const currentIndex = commandManager.getHistoryIndex();
       const redoSteps = historySize - currentIndex - 1;
@@ -148,7 +148,7 @@ export function createRedoMultipleCommand(commandManager: CommandManager): Comma
 
       let successCount = 0;
       for (let i = 0; i < actualSteps; i++) {
-        const result = await commandManager.redo(context);
+        const result = await commandManager.redo(_context);
         if (result.success) {
           successCount++;
         } else {
@@ -181,7 +181,7 @@ export function createGotoHistoryCommand(commandManager: CommandManager): Comman
     category: CommandCategory.HISTORY,
     undoable: false,
 
-    async execute(context: CommandContext, targetIndex: number): Promise<CommandResult> {
+    async execute(_context: CommandContext, targetIndex: number): Promise<CommandResult> {
       const currentIndex = commandManager.getHistoryIndex();
       const historySize = commandManager.getHistorySize();
 
@@ -203,12 +203,12 @@ export function createGotoHistoryCommand(commandManager: CommandManager): Comman
       // 撤销到目标状态
       if (targetIndex < currentIndex) {
         const steps = currentIndex - targetIndex;
-        return await commandManager.execute('history.undoMultiple', context, [steps]);
+        return await commandManager.execute('history.undoMultiple', _context, [steps]);
       }
 
       // 重做回目标状态
       const steps = targetIndex - currentIndex;
-      return await commandManager.execute('history.redoMultiple', context, [steps]);
+      return await commandManager.execute('history.redoMultiple', _context, [steps]);
     },
 
     isEnabled(): boolean {
@@ -221,7 +221,7 @@ export function createGotoHistoryCommand(commandManager: CommandManager): Comman
  * 历史快照命令
  * 创建当前状态的快照
  */
-export function createSnapshotCommand(commandManager: CommandManager): Command {
+export function createSnapshotCommand(_commandManager: CommandManager): Command {
   return {
     id: 'history.snapshot',
     name: '创建快照',
@@ -229,13 +229,13 @@ export function createSnapshotCommand(commandManager: CommandManager): Command {
     category: CommandCategory.HISTORY,
     undoable: false,
 
-    execute(context: CommandContext, name?: string): CommandResult {
+    execute(_context: CommandContext, name?: string): CommandResult {
       // 这里可以实现快照功能，将当前状态保存到快照列表
       const snapshot = {
         id: `snapshot-${Date.now()}`,
         name: name || `快照 ${new Date().toLocaleString()}`,
         timestamp: Date.now(),
-        state: context.state,
+        state: _context.state,
       };
 
       // 保存快照到某个存储中

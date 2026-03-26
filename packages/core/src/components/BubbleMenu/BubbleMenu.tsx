@@ -73,7 +73,7 @@ export const BubbleMenu: React.FC<BubbleMenuProps> = ({
 
     // 边界检测和调整
     const menuWidth = menuRef.current?.offsetWidth || 200;
-    const menuHeight = menuRef.current?.offsetHeight || 40;
+    void (menuRef.current?.offsetHeight || 40);  // 使用 void 表达式避免未使用变量警告
 
     // 水平居中，但确保不超出容器边界
     left = left - menuWidth / 2;

@@ -4,7 +4,8 @@
  */
 
 import type { Node, TextNode, ElementNode } from '../model/node';
-import type { ExportFormat, ExportOptions } from '../utils/importExport';
+import { ExportFormat } from '../utils/importExport';
+import type { ExportOptions } from '../utils/importExport';
 
 export interface JSONExportOptions extends ExportOptions {
   /** 是否包含文档元数据 */

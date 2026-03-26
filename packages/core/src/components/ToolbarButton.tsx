@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '../utils';
+import { cn } from '../utils';
 
 interface ToolbarButtonProps {
   icon?: React.ComponentType<{ className?: string }>;
@@ -23,7 +23,7 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
       type="button"
       onClick={onClick}
       disabled={isDisabled}
-      className={classNames(
+      className={cn(
         'wheelchair-toolbar-button',
         isActive && 'is-active',
         className

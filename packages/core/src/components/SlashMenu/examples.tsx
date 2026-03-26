@@ -5,12 +5,12 @@ import { SlashMenu, defaultSlashCommands, SlashCommand } from './';
  * 示例 1: 基础斜杠菜单
  */
 export function BasicSlashMenuExample() {
-  const [visible, setVisible] = useState(true);
+  const [visible, _setVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleCommandSelect = (command: SlashCommand) => {
     console.log('选择命令:', command.label);
-    setVisible(false);
+    _setVisible(false);
   };
 
   return (
@@ -24,10 +24,10 @@ export function BasicSlashMenuExample() {
         position={{ top: 60, left: 20 }}
         containerRef={containerRef}
         onCommandSelect={handleCommandSelect}
-        onClose={() => setVisible(false)}
+        onClose={() => _setVisible(false)}
       />
       <button
-        onClick={() => setVisible(!visible)}
+        onClick={() => _setVisible(!visible)}
         className="mt-40 px-4 py-2 bg-blue-500 text-white rounded"
       >
         {visible ? '隐藏' : '显示'} 菜单
@@ -40,7 +40,7 @@ export function BasicSlashMenuExample() {
  * 示例 2: 带搜索过滤的斜杠菜单
  */
 export function FilteredSlashMenuExample() {
-  const [visible, setVisible] = useState(true);
+  const [visible, _setVisible] = useState(true);
   const [filter, setFilter] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +78,7 @@ export function FilteredSlashMenuExample() {
  * 示例 3: 自定义命令
  */
 export function CustomCommandsExample() {
-  const [visible, setVisible] = useState(true);
+  const [visible, _setVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const customCommands: SlashCommand[] = [
@@ -204,7 +204,7 @@ export function IntegratedSlashMenuExample() {
             setVisible(false);
           }
         }}
-        placeholder="输入 / 查看可用命令..."
+        // placeholder="输入 / 查看可用命令..."
       >
         输入 / 试试...
       </div>

@@ -1,7 +1,7 @@
 # 🦽 WheelChair Editor
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="version">
+  <img src="https://img.shields.io/badge/version-1.0.1-blue.svg" alt="version">
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="license">
   <img src="https://img.shields.io/badge/TypeScript-100%25-blue.svg" alt="typescript">
 </p>
@@ -23,6 +23,8 @@
 ## 📖 简介
 
 **WheelChair** 是一个基于现代 Web 技术构建的富文本编辑器，专为开发者设计。它提供了简洁的 API、丰富的扩展系统和出色的用户体验。
+
+> 🎉 [**新用户？查看欢迎文档 →**](./WELCOME.md)
 
 ### 为什么选择 WheelChair？
 
@@ -48,6 +50,7 @@
 - ✅ 文字颜色、背景色
 - ✅ 字体大小
 - ✅ 行内代码
+- ✅ **数学公式**（LaTeX 支持）
 
 ### 段落样式
 - ✅ 标题 (H1-H6)
@@ -68,6 +71,11 @@
 - ✅ 链接
 - ✅ 表格
 - ✅ iframe 嵌入
+
+### Markdown 支持
+- ✅ 实时输入转换（`## ` → H2, `- ` → 列表）
+- ✅ Markdown 导入/导出
+- ✅ 双栏预览模式
 
 ### 高级功能
 - ✅ 搜索和替换
@@ -147,15 +155,23 @@ function App() {
 
 ## 📚 文档
 
+### 📖 用户手册
+- [**用户手册**](./docs/MANUAL.md) - 完整的功能使用指南（推荐新用户阅读）
+
 ### 入门指南
 - [安装指南](./docs/installation.md)
 - [基础概念](./docs/concepts.md)
 - [配置选项](./docs/configuration.md)
 
+### 功能指南
+- [📖 完整用户手册](./docs/MANUAL.md) - 所有功能的详细说明
+- [⚡ 快速入门](./docs/QUICKSTART.md) - 5 分钟上手教程
+- [📝 Markdown 指南](./docs/MARKDOWN.md) - Markdown 语法参考
+- [∑ 数学公式指南](./docs/MATH.md) - LaTeX 公式完整教程
+- [⌨️ 快捷键参考](./docs/SHORTCUTS.md) - 所有快捷键列表
+
 ### API 参考
 - [Core API](./packages/core/README.md)
-- [React API](./packages/react/README.md)
-- [Extensions API](./packages/extensions/README.md)
 
 ### 扩展开发
 - [创建节点](./docs/extensions/nodes.md)
@@ -164,32 +180,28 @@ function App() {
 
 ## 🎨 示例
 
-### [基础示例](./examples/basic/)
-最简单的编辑器配置，快速上手。
+### [演示应用](./apps/demo/)
+功能完整的演示应用，包含所有最新功能。
 
 ```bash
-cd examples/basic
-npm install
-npm run dev
+cd apps/demo
+pnpm install
+pnpm dev
 ```
 
-### [全功能示例](./examples/full-featured/)
-展示所有功能和扩展。
+### 快速体验功能
 
-```bash
-cd examples/full-featured
-npm install
-npm run dev
+**Markdown 输入**
+```
+输入 ## 标题    →  自动转为 H2 标题
+输入 - 列表    →  自动转为无序列表
+输入 $E=mc^2$  →  自动转为数学公式
 ```
 
-### [自定义扩展示例](./examples/custom-extension/)
-学习如何创建自定义节点、标记和工具栏。
-
-```bash
-cd examples/custom-extension
-npm install
-npm run dev
-```
+**数学公式**
+- 行内公式：`$E = mc^2$`
+- 块级公式：`$$\sum_{i=1}^{n} x_i$$`
+- 快捷键：`Ctrl+M`（行内）、`Ctrl+Shift+M`（块级）
 
 ### [演示应用](./apps/demo/)
 功能完整的演示应用。

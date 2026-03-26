@@ -1,0 +1,141 @@
+/**
+ * WheelChair Editor - Split Pane Styles
+ * 双栏分割组件样式
+ */
+
+/* ============================================
+   基础容器
+   ============================================ */
+
+.wch-split-pane {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wch-split-pane--horizontal {
+  flex-direction: row;
+}
+
+.wch-split-pane--vertical {
+  flex-direction: column;
+}
+
+.wch-split-pane.is-dragging {
+  cursor: col-resize;
+}
+
+.wch-split-pane--vertical.is-dragging {
+  cursor: row-resize;
+}
+
+/* ============================================
+   面板
+   ============================================ */
+
+.wch-split-pane__pane {
+  overflow: auto;
+  flex-shrink: 0;
+}
+
+.wch-split-pane__first {
+  background: var(--bg-primary);
+}
+
+.wch-split-pane__second {
+  background: var(--bg-secondary, var(--bg-primary));
+}
+
+/* ============================================
+   分割线
+   ============================================ */
+
+.wch-split-pane__divider {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--border-color);
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+
+.wch-split-pane--horizontal .wch-split-pane__divider {
+  width: 4px;
+  cursor: col-resize;
+}
+
+.wch-split-pane--vertical .wch-split-pane__divider {
+  height: 4px;
+  cursor: row-resize;
+}
+
+.wch-split-pane__divider:hover,
+.wch-split-pane.is-dragging .wch-split-pane__divider {
+  background: var(--primary-color, #3b82f6);
+}
+
+/* 拖拽手柄 */
+.wch-split-pane__divider-handle {
+  background: var(--text-muted);
+  border-radius: 2px;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.wch-split-pane--horizontal .wch-split-pane__divider-handle {
+  width: 2px;
+  height: 24px;
+}
+
+.wch-split-pane--vertical .wch-split-pane__divider-handle {
+  width: 24px;
+  height: 2px;
+}
+
+.wch-split-pane__divider:hover .wch-split-pane__divider-handle,
+.wch-split-pane.is-dragging .wch-split-pane__divider-handle {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* ============================================
+   拖拽时的遮罩（防止 iframe 等捕获鼠标事件）
+   ============================================ */
+
+.wch-split-pane.is-dragging::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  cursor: inherit;
+}
+
+/* ============================================
+   响应式
+   ============================================ */
+
+@media (max-width: 768px) {
+  .wch-split-pane--horizontal {
+    flex-direction: column;
+  }
+  
+  .wch-split-pane--horizontal .wch-split-pane__pane {
+    width: 100% !important;
+    height: 50% !important;
+  }
+  
+  .wch-split-pane--horizontal .wch-split-pane__divider {
+    width: 100%;
+    height: 4px;
+    cursor: row-resize;
+  }
+  
+  .wch-split-pane--horizontal .wch-split-pane__divider-handle {
+    width: 24px;
+    height: 2px;
+  }
+}

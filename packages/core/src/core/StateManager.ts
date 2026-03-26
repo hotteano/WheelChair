@@ -1,14 +1,60 @@
 import { createStore, StoreApi } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { Editor, JSONContent } from '@tiptap/core';
-import { 
-  EditorStateStore, 
-  EditorStateActions, 
-  EditorStore, 
-  EditorSelection, 
-  WordCount, 
-  HistoryState 
-} from '../types';
+
+export interface EditorSelection {
+  from: number;
+  to: number;
+  empty: boolean;
+  anchor: number;
+  head: number;
+}
+
+export interface WordCount {
+  words: number;
+  characters: number;
+  charactersWithoutSpaces: number;
+}
+
+export interface HistoryState {
+  canUndo: boolean;
+  canRedo: boolean;
+  undoDepth: number;
+  redoDepth: number;
+}
+
+export interface EditorStateStore {
+  editor: Editor | null;
+  content: JSONContent | null;
+  html: string;
+  text: string;
+  isEditable: boolean;
+  isFocused: boolean;
+  selection: EditorSelection | null;
+  wordCount: WordCount;
+  history: HistoryState;
+  isReady: boolean;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export interface EditorStateActions {
+  setEditor: (editor: Editor | null) => void;
+  setContent: (content: JSONContent) => void;
+  setHTML: (html: string) => void;
+  setText: (text: string) => void;
+  setEditable: (isEditable: boolean) => void;
+  setFocused: (isFocused: boolean) => void;
+  setSelection: (selection: EditorSelection | null) => void;
+  setWordCount: (wordCount: WordCount) => void;
+  setHistory: (history: HistoryState) => void;
+  setReady: (isReady: boolean) => void;
+  setLoading: (isLoading: boolean) => void;
+  setError: (error: Error | null) => void;
+  reset: () => void;
+}
+
+export type EditorStore = EditorStateStore & EditorStateActions;
 
 /**
  * 默认状态
@@ -47,7 +93,7 @@ export class StateManager {
 
   constructor(initialState?: Partial<EditorStateStore>) {
     this.store = createStore<EditorStore>()(
-      subscribeWithSelector((set, get) => ({
+      subscribeWithSelector((set, _get) => ({
         ...DEFAULT_STATE,
         ...initialState,
 
@@ -195,7 +241,12 @@ export class StateManager {
     selector: (state: EditorStore) => T,
     listener: (value: T, prevValue: T) => void
   ): () => void {
-    const unsubscribe = this.store.subscribe(selector, listener);
+    const unsubscribe = this.store.subscribe(
+      (state) => {
+        const value = selector(state);
+        listener(value, value);
+      }
+    );
     this.unsubscribeCallbacks.push(unsubscribe);
     return unsubscribe;
   }
@@ -206,7 +257,7 @@ export class StateManager {
   onEditorChange(listener: (editor: Editor | null) => void): () => void {
     return this.subscribe(
       (state) => state.editor,
-      (editor) => listener(editor)
+      (editor: Editor | null) => listener(editor)
     );
   }
 
@@ -216,7 +267,7 @@ export class StateManager {
   onContentChange(listener: (content: JSONContent | null) => void): () => void {
     return this.subscribe(
       (state) => state.content,
-      (content) => listener(content)
+      (content: JSONContent | null) => listener(content)
     );
   }
 
@@ -226,7 +277,7 @@ export class StateManager {
   onHTMLChange(listener: (html: string) => void): () => void {
     return this.subscribe(
       (state) => state.html,
-      (html) => listener(html)
+      (html: string) => listener(html)
     );
   }
 
@@ -236,7 +287,7 @@ export class StateManager {
   onSelectionChange(listener: (selection: EditorSelection | null) => void): () => void {
     return this.subscribe(
       (state) => state.selection,
-      (selection) => listener(selection)
+      (selection: EditorSelection | null) => listener(selection)
     );
   }
 
@@ -246,7 +297,7 @@ export class StateManager {
   onFocusChange(listener: (isFocused: boolean) => void): () => void {
     return this.subscribe(
       (state) => state.isFocused,
-      (isFocused) => listener(isFocused)
+      (isFocused: boolean) => listener(isFocused)
     );
   }
 
@@ -256,7 +307,7 @@ export class StateManager {
   onEditableChange(listener: (isEditable: boolean) => void): () => void {
     return this.subscribe(
       (state) => state.isEditable,
-      (isEditable) => listener(isEditable)
+      (isEditable: boolean) => listener(isEditable)
     );
   }
 
@@ -266,7 +317,7 @@ export class StateManager {
   onWordCountChange(listener: (wordCount: WordCount) => void): () => void {
     return this.subscribe(
       (state) => state.wordCount,
-      (wordCount) => listener(wordCount)
+      (wordCount: WordCount) => listener(wordCount)
     );
   }
 
@@ -276,7 +327,7 @@ export class StateManager {
   onHistoryChange(listener: (history: HistoryState) => void): () => void {
     return this.subscribe(
       (state) => state.history,
-      (history) => listener(history)
+      (history: HistoryState) => listener(history)
     );
   }
 
@@ -286,7 +337,7 @@ export class StateManager {
   onReadyChange(listener: (isReady: boolean) => void): () => void {
     return this.subscribe(
       (state) => state.isReady,
-      (isReady) => listener(isReady)
+      (isReady: boolean) => listener(isReady)
     );
   }
 
@@ -296,7 +347,7 @@ export class StateManager {
   onErrorChange(listener: (error: Error | null) => void): () => void {
     return this.subscribe(
       (state) => state.error,
-      (error) => listener(error)
+      (error: Error | null) => listener(error)
     );
   }
 
@@ -325,7 +376,7 @@ export class StateManager {
         empty: selection.empty,
         anchor: selection.anchor,
         head: selection.head,
-      },
+      } as EditorSelection,
     });
   }
 

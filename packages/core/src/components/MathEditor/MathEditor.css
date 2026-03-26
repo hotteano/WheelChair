@@ -1,0 +1,346 @@
+/**
+ * WheelChair Editor - Math Editor Styles
+ * 数学公式编辑器样式
+ */
+
+.wch-math-editor {
+  background: var(--bg-primary, #fff);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  width: 500px;
+  max-width: 90vw;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 头部 */
+.wch-math-editor__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, #f9fafb);
+}
+
+.wch-math-editor__header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+}
+
+.wch-math-editor__header .close-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 20px;
+  color: var(--text-secondary, #6b7280);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.wch-math-editor__header .close-btn:hover {
+  background: var(--bg-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+/* 标签页 */
+.wch-math-editor__tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, #f9fafb);
+}
+
+.wch-math-editor__tabs button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-secondary, #6b7280);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.wch-math-editor__tabs button:hover {
+  color: var(--text-primary, #111827);
+  background: var(--bg-hover, #f3f4f6);
+}
+
+.wch-math-editor__tabs button.active {
+  color: var(--primary-color, #3b82f6);
+  font-weight: 500;
+}
+
+.wch-math-editor__tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary-color, #3b82f6);
+}
+
+/* 编辑区域 */
+.wch-math-editor__content {
+  padding: 20px;
+}
+
+.math-input {
+  width: 100%;
+  padding: 12px;
+  font-family: 'Fira Code', 'SFMono-Regular', Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  background: var(--bg-primary, #fff);
+  color: var(--text-primary, #111827);
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s;
+}
+
+.math-input:focus {
+  outline: none;
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 预览区域 */
+.preview-section {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--bg-secondary, #f9fafb);
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.preview-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.preview-content {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-content.block {
+  padding: 16px;
+}
+
+.preview-content :global(.katex) {
+  font-size: 1.1em;
+}
+
+.preview-content .placeholder {
+  color: var(--text-muted, #9ca3af);
+  font-size: 14px;
+}
+
+.preview-content .error {
+  color: #ef4444;
+  font-size: 14px;
+  font-family: monospace;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border-radius: 6px;
+}
+
+/* 错误消息 */
+.error-message {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+/* 模板区域 */
+.wch-math-editor__templates {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.template-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  background: var(--bg-primary, #fff);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.template-item:hover {
+  background: var(--bg-secondary, #f9fafb);
+  border-color: var(--primary-color, #3b82f6);
+  transform: translateY(-1px);
+}
+
+.template-display {
+  font-size: 20px;
+  margin-bottom: 4px;
+  color: var(--text-primary, #111827);
+}
+
+.template-label {
+  font-size: 11px;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* 底部 */
+.wch-math-editor__footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, #f9fafb);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--primary-color, #3b82f6);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover, #2563eb);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--bg-primary, #fff);
+  border-color: var(--border-color, #e5e7eb);
+  color: var(--text-primary, #111827);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover, #f3f4f6);
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+/* 快捷键提示 */
+.wch-math-editor__shortcuts {
+  padding: 10px 20px;
+  background: var(--bg-tertiary, #f3f4f6);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text-muted, #9ca3af);
+}
+
+/* 暗色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .wch-math-editor {
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --bg-tertiary: #374151;
+    --bg-hover: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+    --primary-color: #60a5fa;
+    --primary-hover: #3b82f6;
+  }
+}
+
+/* 公式节点样式 */
+.math-inline {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 4px;
+  margin: 0 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.math-inline:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.math-block {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin: 12px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  overflow-x: auto;
+}
+
+.math-block:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.math-error {
+  color: #ef4444;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* 响应式 */
+@media (max-width: 480px) {
+  .wch-math-editor__templates {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .actions {
+    justify-content: flex-end;
+  }
+}

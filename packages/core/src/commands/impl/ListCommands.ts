@@ -25,13 +25,13 @@ function createListTypeCommand(
     category: CommandCategory.LIST,
     undoable: true,
 
-    execute(context: CommandContext): CommandResult {
+    execute(_context: CommandContext): CommandResult {
       const previousState = {
-        wasList: context.getCurrentBlockType().startsWith('list-'),
-        previousType: context.getCurrentBlockType(),
+        wasList: _context.getCurrentBlockType().startsWith('list-'),
+        previousType: _context.getCurrentBlockType(),
       };
 
-      context.setBlockType(`list-${listType}`, { type: listType });
+      _context.setBlockType(`list-${listType}`, { type: listType });
 
       return {
         success: true,
@@ -40,11 +40,11 @@ function createListTypeCommand(
       };
     },
 
-    undo(context: CommandContext, undoData: { wasList: boolean; previousType: string }): CommandResult {
+    undo(_context: CommandContext, undoData: { wasList: boolean; previousType: string }): CommandResult {
       if (undoData.wasList) {
-        context.setBlockType(undoData.previousType);
+        _context.setBlockType(undoData.previousType);
       } else {
-        context.setBlockType('paragraph');
+        _context.setBlockType('paragraph');
       }
 
       return {
@@ -53,11 +53,11 @@ function createListTypeCommand(
       };
     },
 
-    isActive(context: CommandContext): boolean {
-      return context.getCurrentBlockType() === `list-${listType}`;
+    isActive(_context: CommandContext): boolean {
+      return _context.getCurrentBlockType() === `list-${listType}`;
     },
 
-    isEnabled(context: CommandContext): boolean {
+    isEnabled(_context: CommandContext): boolean {
       return true;
     },
   };
@@ -100,10 +100,10 @@ export const ToggleListFoldCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const isFolded = context.state.getBlockAttribute?.('folded') || false;
+  execute(_context: CommandContext): CommandResult {
+    const isFolded = _context.state.getBlockAttribute?.('folded') || false;
     
-    context.state.setBlockAttribute?.('folded', !isFolded);
+    _context.state.setBlockAttribute?.('folded', !isFolded);
 
     return {
       success: true,
@@ -112,8 +112,8 @@ export const ToggleListFoldCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { wasFolded: boolean }): CommandResult {
-    context.state.setBlockAttribute?.('folded', undoData.wasFolded);
+  undo(_context: CommandContext, undoData: { wasFolded: boolean }): CommandResult {
+    _context.state.setBlockAttribute?.('folded', undoData.wasFolded);
 
     return {
       success: true,
@@ -121,12 +121,12 @@ export const ToggleListFoldCommand: Command = {
     };
   },
 
-  isActive(context: CommandContext): boolean {
-    return context.state.getBlockAttribute?.('folded') === true;
+  isActive(_context: CommandContext): boolean {
+    return _context.state.getBlockAttribute?.('folded') === true;
   },
 
-  isEnabled(context: CommandContext): boolean {
-    const blockType = context.getCurrentBlockType();
+  isEnabled(_context: CommandContext): boolean {
+    const blockType = _context.getCurrentBlockType();
     return blockType.startsWith('list-') || blockType === ListType.TOGGLE;
   },
 };
@@ -141,10 +141,10 @@ export const ToggleCheckboxCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const isChecked = context.state.getBlockAttribute?.('checked') || false;
+  execute(_context: CommandContext): CommandResult {
+    const isChecked = _context.state.getBlockAttribute?.('checked') || false;
 
-    context.state.setBlockAttribute?.('checked', !isChecked);
+    _context.state.setBlockAttribute?.('checked', !isChecked);
 
     return {
       success: true,
@@ -153,8 +153,8 @@ export const ToggleCheckboxCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { wasChecked: boolean }): CommandResult {
-    context.state.setBlockAttribute?.('checked', undoData.wasChecked);
+  undo(_context: CommandContext, undoData: { wasChecked: boolean }): CommandResult {
+    _context.state.setBlockAttribute?.('checked', undoData.wasChecked);
 
     return {
       success: true,
@@ -162,12 +162,12 @@ export const ToggleCheckboxCommand: Command = {
     };
   },
 
-  isActive(context: CommandContext): boolean {
-    return context.state.getBlockAttribute?.('checked') === true;
+  isActive(_context: CommandContext): boolean {
+    return _context.state.getBlockAttribute?.('checked') === true;
   },
 
-  isEnabled(context: CommandContext): boolean {
-    return context.getCurrentBlockType() === `list-${ListType.TASK}`;
+  isEnabled(_context: CommandContext): boolean {
+    return _context.getCurrentBlockType() === `list-${ListType.TASK}`;
   },
 };
 
@@ -181,8 +181,8 @@ export const IndentListCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  execute(_context: CommandContext): CommandResult {
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
     const maxIndent = 8;
 
     if (currentIndent >= maxIndent) {
@@ -192,7 +192,7 @@ export const IndentListCommand: Command = {
       };
     }
 
-    context.state.setBlockAttribute?.('indent', currentIndent + 1);
+    _context.state.setBlockAttribute?.('indent', currentIndent + 1);
 
     return {
       success: true,
@@ -201,8 +201,8 @@ export const IndentListCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousIndent: number }): CommandResult {
-    context.state.setBlockAttribute?.('indent', undoData.previousIndent);
+  undo(_context: CommandContext, undoData: { previousIndent: number }): CommandResult {
+    _context.state.setBlockAttribute?.('indent', undoData.previousIndent);
 
     return {
       success: true,
@@ -210,9 +210,9 @@ export const IndentListCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    const blockType = context.getCurrentBlockType();
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  isEnabled(_context: CommandContext): boolean {
+    const blockType = _context.getCurrentBlockType();
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
     return blockType.startsWith('list-') && currentIndent < 8;
   },
 };
@@ -227,8 +227,8 @@ export const OutdentListCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  execute(_context: CommandContext): CommandResult {
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
 
     if (currentIndent <= 0) {
       return {
@@ -237,7 +237,7 @@ export const OutdentListCommand: Command = {
       };
     }
 
-    context.state.setBlockAttribute?.('indent', currentIndent - 1);
+    _context.state.setBlockAttribute?.('indent', currentIndent - 1);
 
     return {
       success: true,
@@ -246,8 +246,8 @@ export const OutdentListCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousIndent: number }): CommandResult {
-    context.state.setBlockAttribute?.('indent', undoData.previousIndent);
+  undo(_context: CommandContext, undoData: { previousIndent: number }): CommandResult {
+    _context.state.setBlockAttribute?.('indent', undoData.previousIndent);
 
     return {
       success: true,
@@ -255,8 +255,8 @@ export const OutdentListCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  isEnabled(_context: CommandContext): boolean {
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
     return currentIndent > 0;
   },
 };
@@ -271,8 +271,8 @@ export const InsertListItemBeforeCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const blockType = context.getCurrentBlockType();
+  execute(_context: CommandContext): CommandResult {
+    const blockType = _context.getCurrentBlockType();
     
     if (!blockType.startsWith('list-')) {
       return {
@@ -282,8 +282,8 @@ export const InsertListItemBeforeCommand: Command = {
     }
 
     // 插入新列表项
-    context.insertText('\n');
-    context.setBlockType(blockType);
+    _context.insertText('\n');
+    _context.setBlockType(blockType);
 
     return {
       success: true,
@@ -292,9 +292,9 @@ export const InsertListItemBeforeCommand: Command = {
     };
   },
 
-  undo(context: CommandContext): CommandResult {
+  undo(_context: CommandContext): CommandResult {
     // 删除刚插入的项
-    context.deleteSelection();
+    _context.deleteSelection();
 
     return {
       success: true,
@@ -302,8 +302,8 @@ export const InsertListItemBeforeCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    return context.getCurrentBlockType().startsWith('list-');
+  isEnabled(_context: CommandContext): boolean {
+    return _context.getCurrentBlockType().startsWith('list-');
   },
 };
 
@@ -317,8 +317,8 @@ export const InsertListItemAfterCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const blockType = context.getCurrentBlockType();
+  execute(_context: CommandContext): CommandResult {
+    const blockType = _context.getCurrentBlockType();
     
     if (!blockType.startsWith('list-')) {
       return {
@@ -328,8 +328,8 @@ export const InsertListItemAfterCommand: Command = {
     }
 
     // 移到行尾并插入新列表项
-    context.insertText('\n');
-    context.setBlockType(blockType);
+    _context.insertText('\n');
+    _context.setBlockType(blockType);
 
     return {
       success: true,
@@ -338,8 +338,8 @@ export const InsertListItemAfterCommand: Command = {
     };
   },
 
-  undo(context: CommandContext): CommandResult {
-    context.deleteSelection();
+  undo(_context: CommandContext): CommandResult {
+    _context.deleteSelection();
 
     return {
       success: true,
@@ -347,8 +347,8 @@ export const InsertListItemAfterCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    return context.getCurrentBlockType().startsWith('list-');
+  isEnabled(_context: CommandContext): boolean {
+    return _context.getCurrentBlockType().startsWith('list-');
   },
 };
 
@@ -363,8 +363,8 @@ export const SplitListItemCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const blockType = context.getCurrentBlockType();
+  execute(_context: CommandContext): CommandResult {
+    const blockType = _context.getCurrentBlockType();
     
     if (!blockType.startsWith('list-')) {
       return {
@@ -373,8 +373,8 @@ export const SplitListItemCommand: Command = {
       };
     }
 
-    const selection = context.getSelection();
-    if (!selection) {
+    const _selection = _context.getSelection();
+    if (!_selection) {
       return {
         success: false,
         message: '无法获取选区',
@@ -382,19 +382,19 @@ export const SplitListItemCommand: Command = {
     }
 
     // 分割列表项
-    context.insertText('\n');
-    context.setBlockType(blockType);
+    _context.insertText('\n');
+    _context.setBlockType(blockType);
 
     return {
       success: true,
-      undoData: { selection: selection.toString() },
+      undoData: { selection: _selection.toString() },
       stateChanged: true,
     };
   },
 
-  undo(context: CommandContext): CommandResult {
+  undo(_context: CommandContext): CommandResult {
     // 合并分割的项
-    context.deleteSelection();
+    _context.deleteSelection();
 
     return {
       success: true,
@@ -402,8 +402,8 @@ export const SplitListItemCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    return context.getCurrentBlockType().startsWith('list-');
+  isEnabled(_context: CommandContext): boolean {
+    return _context.getCurrentBlockType().startsWith('list-');
   },
 };
 
@@ -417,8 +417,8 @@ export const RemoveListCommand: Command = {
   category: CommandCategory.LIST,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const blockType = context.getCurrentBlockType();
+  execute(_context: CommandContext): CommandResult {
+    const blockType = _context.getCurrentBlockType();
     
     if (!blockType.startsWith('list-')) {
       return {
@@ -429,11 +429,11 @@ export const RemoveListCommand: Command = {
 
     const previousState = {
       listType: blockType,
-      indent: context.state.getBlockAttribute?.('indent') || 0,
+      indent: _context.state.getBlockAttribute?.('indent') || 0,
     };
 
-    context.setBlockType('paragraph');
-    context.state.removeBlockAttribute?.('indent');
+    _context.setBlockType('paragraph');
+    _context.state.removeBlockAttribute?.('indent');
 
     return {
       success: true,
@@ -442,9 +442,9 @@ export const RemoveListCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { listType: string; indent: number }): CommandResult {
-    context.setBlockType(undoData.listType);
-    context.state.setBlockAttribute?.('indent', undoData.indent);
+  undo(_context: CommandContext, undoData: { listType: string; indent: number }): CommandResult {
+    _context.setBlockType(undoData.listType);
+    _context.state.setBlockAttribute?.('indent', undoData.indent);
 
     return {
       success: true,
@@ -452,8 +452,8 @@ export const RemoveListCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    return context.getCurrentBlockType().startsWith('list-');
+  isEnabled(_context: CommandContext): boolean {
+    return _context.getCurrentBlockType().startsWith('list-');
   },
 };
 

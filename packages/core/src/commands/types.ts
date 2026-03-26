@@ -4,8 +4,29 @@
  * 提供命令系统的基础类型、接口和枚举定义
  */
 
-import type { EditorState } from '@tiptap/pm/state';
+import type { EditorState as PMEditorState } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
+
+/**
+ * 扩展的编辑器状态
+ * 包含 WheelChair 编辑器特有的方法
+ */
+export interface EditorState extends PMEditorState {
+  /** 获取块属性 */
+  getBlockAttribute?(key: string): any;
+  /** 设置块属性 */
+  setBlockAttribute?(key: string, value: any): void;
+  /** 移除块属性 */
+  removeBlockAttribute?(key: string): void;
+  /** 获取当前激活的格式 */
+  getActiveFormats?(): string[];
+  /** 获取格式值 */
+  getFormatValue?(format: string): any;
+  /** 获取当前行文本 */
+  getCurrentLineText?(): string;
+  /** 删除当前行 */
+  deleteCurrentLine?(): void;
+}
 
 /**
  * 命令执行上下文

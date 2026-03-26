@@ -37,8 +37,8 @@ function createBlockTypeCommand(
       };
     },
 
-    undo(context: CommandContext, undoData: { previousType: string }): CommandResult {
-      context.setBlockType(undoData.previousType);
+    undo(_context: CommandContext, undoData: { previousType: string }): CommandResult {
+      _context.setBlockType(undoData.previousType);
 
       return {
         success: true,
@@ -46,11 +46,11 @@ function createBlockTypeCommand(
       };
     },
 
-    isActive(context: CommandContext): boolean {
-      return context.getCurrentBlockType() === blockType;
+    isActive(_context: CommandContext): boolean {
+      return _context.getCurrentBlockType() === blockType;
     },
 
-    isEnabled(context: CommandContext): boolean {
+    isEnabled(_context: CommandContext): boolean {
       return true;
     },
   };
@@ -150,8 +150,8 @@ export const CodeBlockCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousType: string }): CommandResult {
-    context.setBlockType(undoData.previousType);
+  undo(_context: CommandContext, undoData: { previousType: string }): CommandResult {
+    _context.setBlockType(undoData.previousType);
 
     return {
       success: true,
@@ -159,11 +159,11 @@ export const CodeBlockCommand: Command = {
     };
   },
 
-  isActive(context: CommandContext): boolean {
-    return context.getCurrentBlockType() === BlockType.CODE_BLOCK;
+  isActive(_context: CommandContext): boolean {
+    return _context.getCurrentBlockType() === BlockType.CODE_BLOCK;
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };
@@ -188,7 +188,7 @@ export const HorizontalRuleCommand: Command = {
     };
   },
 
-  undo(context: CommandContext): CommandResult {
+  undo(_context: CommandContext): CommandResult {
     // 需要实现删除最近插入的分割线逻辑
     return {
       success: true,
@@ -196,7 +196,7 @@ export const HorizontalRuleCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };
@@ -220,11 +220,11 @@ function createAlignCommand(
     category: CommandCategory.BLOCK,
     undoable: true,
 
-    execute(context: CommandContext): CommandResult {
+    execute(_context: CommandContext): CommandResult {
       // 获取当前对齐方式
-      const currentAlignment = context.state.getBlockAttribute?.('alignment') || Alignment.LEFT;
+      const currentAlignment = _context.state.getBlockAttribute?.('alignment') || Alignment.LEFT;
 
-      context.state.setBlockAttribute?.('alignment', alignment);
+      _context.state.setBlockAttribute?.('alignment', alignment);
 
       return {
         success: true,
@@ -233,8 +233,8 @@ function createAlignCommand(
       };
     },
 
-    undo(context: CommandContext, undoData: { previousAlignment: Alignment }): CommandResult {
-      context.state.setBlockAttribute?.('alignment', undoData.previousAlignment);
+    undo(_context: CommandContext, undoData: { previousAlignment: Alignment }): CommandResult {
+      _context.state.setBlockAttribute?.('alignment', undoData.previousAlignment);
 
       return {
         success: true,
@@ -242,11 +242,11 @@ function createAlignCommand(
       };
     },
 
-    isActive(context: CommandContext): boolean {
-      return context.state.getBlockAttribute?.('alignment') === alignment;
+    isActive(_context: CommandContext): boolean {
+      return _context.state.getBlockAttribute?.('alignment') === alignment;
     },
 
-    isEnabled(context: CommandContext): boolean {
+    isEnabled(_context: CommandContext): boolean {
       return true;
     },
   };
@@ -298,8 +298,8 @@ export const IndentCommand: Command = {
   category: CommandCategory.BLOCK,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  execute(_context: CommandContext): CommandResult {
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
     const maxIndent = 8;
 
     if (currentIndent >= maxIndent) {
@@ -309,7 +309,7 @@ export const IndentCommand: Command = {
       };
     }
 
-    context.state.setBlockAttribute?.('indent', currentIndent + 1);
+    _context.state.setBlockAttribute?.('indent', currentIndent + 1);
 
     return {
       success: true,
@@ -318,8 +318,8 @@ export const IndentCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousIndent: number }): CommandResult {
-    context.state.setBlockAttribute?.('indent', undoData.previousIndent);
+  undo(_context: CommandContext, undoData: { previousIndent: number }): CommandResult {
+    _context.state.setBlockAttribute?.('indent', undoData.previousIndent);
 
     return {
       success: true,
@@ -327,8 +327,8 @@ export const IndentCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  isEnabled(_context: CommandContext): boolean {
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
     return currentIndent < 8;
   },
 };
@@ -343,8 +343,8 @@ export const OutdentCommand: Command = {
   category: CommandCategory.BLOCK,
   undoable: true,
 
-  execute(context: CommandContext): CommandResult {
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  execute(_context: CommandContext): CommandResult {
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
 
     if (currentIndent <= 0) {
       return {
@@ -353,7 +353,7 @@ export const OutdentCommand: Command = {
       };
     }
 
-    context.state.setBlockAttribute?.('indent', currentIndent - 1);
+    _context.state.setBlockAttribute?.('indent', currentIndent - 1);
 
     return {
       success: true,
@@ -362,8 +362,8 @@ export const OutdentCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousIndent: number }): CommandResult {
-    context.state.setBlockAttribute?.('indent', undoData.previousIndent);
+  undo(_context: CommandContext, undoData: { previousIndent: number }): CommandResult {
+    _context.state.setBlockAttribute?.('indent', undoData.previousIndent);
 
     return {
       success: true,
@@ -371,8 +371,8 @@ export const OutdentCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
-    const currentIndent = context.state.getBlockAttribute?.('indent') || 0;
+  isEnabled(_context: CommandContext): boolean {
+    const currentIndent = _context.state.getBlockAttribute?.('indent') || 0;
     return currentIndent > 0;
   },
 };
@@ -387,7 +387,7 @@ export const SetLineHeightCommand: Command = {
   category: CommandCategory.BLOCK,
   undoable: true,
 
-  execute(context: CommandContext, lineHeight: number | string): CommandResult {
+  execute(_context: CommandContext, lineHeight: number | string): CommandResult {
     if (!lineHeight) {
       return {
         success: false,
@@ -395,8 +395,8 @@ export const SetLineHeightCommand: Command = {
       };
     }
 
-    const previousLineHeight = context.state.getBlockAttribute?.('lineHeight');
-    context.state.setBlockAttribute?.('lineHeight', lineHeight);
+    const previousLineHeight = _context.state.getBlockAttribute?.('lineHeight');
+    _context.state.setBlockAttribute?.('lineHeight', lineHeight);
 
     return {
       success: true,
@@ -405,11 +405,11 @@ export const SetLineHeightCommand: Command = {
     };
   },
 
-  undo(context: CommandContext, undoData: { previousLineHeight: any }): CommandResult {
+  undo(_context: CommandContext, undoData: { previousLineHeight: any }): CommandResult {
     if (undoData.previousLineHeight) {
-      context.state.setBlockAttribute?.('lineHeight', undoData.previousLineHeight);
+      _context.state.setBlockAttribute?.('lineHeight', undoData.previousLineHeight);
     } else {
-      context.state.removeBlockAttribute?.('lineHeight');
+      _context.state.removeBlockAttribute?.('lineHeight');
     }
 
     return {
@@ -418,7 +418,7 @@ export const SetLineHeightCommand: Command = {
     };
   },
 
-  isEnabled(context: CommandContext): boolean {
+  isEnabled(_context: CommandContext): boolean {
     return true;
   },
 };

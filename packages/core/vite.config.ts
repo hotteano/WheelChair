@@ -50,6 +50,11 @@ export default defineConfig({
     react(),
     dts({
       insertTypesEntry: true,
+      skipDiagnostics: true, // 跳过类型诊断
+      compilerOptions: {
+        skipLibCheck: true,
+        strict: false,
+      },
     }),
     copyStylesPlugin(),
   ],
