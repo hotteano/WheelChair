@@ -192,7 +192,7 @@ export class WheelChairEditor implements EventEmitter<EditorEventMap> {
         this.options.onChange?.(editor.getJSON(), editor);
 
         // 更新历史记录
-        if (!transaction.getMeta('addToHistory') !== false) {
+        if (transaction.getMeta('addToHistory') !== false) {
           this.historyManager.add(editor.state);
         }
       },

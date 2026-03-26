@@ -1,13 +1,15 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ToolbarButton, ToolbarDropdown } from '../../types';
 
+type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 export interface HeadingOptions {
-  levels: number[];
+  levels: HeadingLevel[];
   HTMLAttributes: Record<string, any>;
 }
 
 export interface HeadingAttributes {
-  level: number;
+  level: HeadingLevel;
 }
 
 declare module '@tiptap/core' {
@@ -16,15 +18,11 @@ declare module '@tiptap/core' {
       /**
        * Set a heading node
        */
-      setHeading: (attributes: HeadingAttributes) => ReturnType;
+      setHeading: (attributes: { level: HeadingLevel }) => ReturnType;
       /**
        * Toggle a heading node
        */
-      toggleHeading: (attributes: HeadingAttributes) => ReturnType;
-      /**
-       * Unset a heading node
-       */
-      unsetHeading: () => ReturnType;
+      toggleHeading: (attributes: { level: HeadingLevel }) => ReturnType;
     };
   }
 }
@@ -56,7 +54,7 @@ export const Heading = Node.create<HeadingOptions>({
 
   parseHTML() {
     return this.options.levels
-      .map((level: number) => ({
+      .map((level: HeadingLevel) => ({
         tag: `h${level}`,
         attrs: { level },
       }));
@@ -93,7 +91,7 @@ export const Heading = Node.create<HeadingOptions>({
 
   addKeyboardShortcuts() {
     return this.options.levels.reduce(
-      (items: Record<string, () => boolean>, level: number) => ({
+      (items: Record<string, () => boolean>, level: HeadingLevel) => ({
         ...items,
         ...{
           [`Mod-${level}`]: () => this.editor.commands.toggleHeading({ level }),
@@ -118,7 +116,7 @@ export const Heading = Node.create<HeadingOptions>({
       name: this.name,
       title: '标题',
       icon: 'heading',
-      items: this.options.levels.map((level: number): ToolbarButton => ({
+      items: this.options.levels.map((level: HeadingLevel): ToolbarButton => ({
         name: `heading-${level}`,
         title: levelTitles[level] || `H${level}`,
         icon: `h${level}`,

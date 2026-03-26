@@ -4,7 +4,8 @@
  */
 
 import type { Node, TextNode, ElementNode } from '../model/node';
-import type { ExportFormat, ImportOptions } from '../utils/importExport';
+import { ExportFormat } from '../utils/importExport';
+import type { ImportOptions } from '../utils/importExport';
 
 export interface TextImportOptions extends ImportOptions {
   /** 是否自动检测列表 */

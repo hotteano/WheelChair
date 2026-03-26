@@ -4,19 +4,17 @@ import type { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import type { UseEditorProps } from '../types';
 
-interface LocalUseEditorProps extends UseEditorProps {
-  extensions?: unknown[];
-}
+export const useEditor = (props: UseEditorProps = {}): Editor | null => {
+  const { content = '', editable = true, extensions = [], ...rest } = props;
 
-export const useEditor = (props: LocalUseEditorProps = {}): Editor | null => {
-  const { content = '', editable = true, extensions = [], ...rest } = props as any;
-
-  const editor = useTiptapEditor({
-    extensions: [StarterKit, ...extensions],
-    content,
-    editable,
-    ...rest,
-  });
+  const editor = useTiptapEditor(
+    {
+      extensions: [StarterKit, ...extensions],
+      content,
+      editable,
+      ...rest,
+    } as any
+  );
 
   return editor;
 };

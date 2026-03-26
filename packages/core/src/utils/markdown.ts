@@ -690,14 +690,14 @@ export class MarkdownSerializer {
 
     const headers = headerRow.children
       .filter(c => c.type === 'element' && c.nodeType === 'tableHeader')
-      .map(c => this.serializeChildren(c.children));
+      .map(c => this.serializeChildren((c as ElementNode).children));
 
     const dataRows = rows.slice(1)
       .filter(r => r.type === 'element' && r.nodeType === 'tableRow')
       .map(r => 
-        r.children
+        (r as ElementNode).children
           .filter(c => c.type === 'element' && c.nodeType === 'tableCell')
-          .map(c => this.serializeChildren(c.children))
+          .map(c => this.serializeChildren((c as ElementNode).children))
       );
 
     // 计算列宽

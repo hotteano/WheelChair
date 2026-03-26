@@ -241,12 +241,9 @@ export class StateManager {
     selector: (state: EditorStore) => T,
     listener: (value: T, prevValue: T) => void
   ): () => void {
-    const unsubscribe = this.store.subscribe(
-      (state) => {
-        const value = selector(state);
-        listener(value, value);
-      }
-    );
+    const unsubscribe = this.store.subscribe((state, prevState) => {
+      listener(selector(state), selector(prevState));
+    });
     this.unsubscribeCallbacks.push(unsubscribe);
     return unsubscribe;
   }

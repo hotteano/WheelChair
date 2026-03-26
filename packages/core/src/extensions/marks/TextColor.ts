@@ -109,7 +109,7 @@ export const TextColorExtension = {
         // 默认设置为黑色
         editor.chain().focus().setColor('#000000').run();
       },
-      isDisabled: (editor: Editor) => !editor.can().chain().focus().setColor().run(),
+      isDisabled: (editor: Editor) => !editor.can().chain().focus().setColor('#000000').run(),
       colorOptions: colors,
       allowCustomColor: true,
     };

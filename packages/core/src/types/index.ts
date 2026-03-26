@@ -26,11 +26,17 @@ export interface WheelChairEditorOptions {
   placeholder?: string;
   autofocus?: boolean | 'start' | 'end' | 'all' | number;
   extensions?: Extensions;
-  onChange?: (content: JSONContent) => void;
-  onUpdate?: ({ editor }: { editor: Editor }) => void;
-  onSelectionUpdate?: ({ editor }: { editor: Editor }) => void;
-  onFocus?: ({ editor }: { editor: Editor }) => void;
-  onBlur?: ({ editor }: { editor: Editor }) => void;
+  onCreate?: (editor: Editor) => void;
+  onChange?: (content: JSONContent, editor: Editor) => void;
+  onUpdate?: (editor: Editor) => void;
+  onSelectionChange?: (selection: EditorSelection, editor: Editor) => void;
+  onFocus?: (event: FocusEvent, editor: Editor) => void;
+  onBlur?: (event: FocusEvent, editor: Editor) => void;
+  onDestroy?: () => void;
+  onPaste?: (event: ClipboardEvent) => boolean | void;
+  onDrop?: (event: DragEvent) => boolean | void;
+  onContentError?: (params: { editor: Editor; error: Error; invalidContent: unknown; disablesOutput: boolean }) => void;
+  onTransaction?: (params: { editor: Editor; transaction: unknown }) => void;
   onError?: (error: Error) => void;
 }
 
@@ -53,12 +59,15 @@ export interface UseWheelChairEditorReturn {
 export interface EditorSelection {
   from: number;
   to: number;
+  empty: boolean;
+  anchor: number;
+  head: number;
 }
 
 export interface WordCount {
   words: number;
   characters: number;
-  charactersWithoutSpaces?: number;
+  charactersWithoutSpaces: number;
 }
 
 export interface HistoryState {
@@ -152,6 +161,28 @@ export interface ToolbarDropdownProps {
   disabled?: boolean;
 }
 
+export interface ToolbarButton {
+  name: string;
+  title: string;
+  icon?: string | React.ReactNode;
+  action?: () => void;
+  isActive?: () => boolean;
+  isDisabled?: () => boolean;
+  disabled?: boolean;
+  shortcut?: string;
+  label?: string;
+  type?: string;
+}
+
+export interface ToolbarDropdown {
+  type: 'dropdown';
+  name: string;
+  title: string;
+  icon?: string | React.ReactNode;
+  items: ToolbarButton[];
+  isActive?: () => boolean;
+}
+
 export interface ToolbarDividerProps {}
 
 export interface ToolbarProps {
@@ -221,6 +252,8 @@ export interface MarkAttributes {
 
 export interface UseEditorStateOptions {
   editor: Editor | null;
+  enableWordCount?: boolean;
+  wordCountDebounce?: number;
   debounceMs?: number;
 }
 
@@ -281,13 +314,6 @@ export type {
 } from '../document/types';
 
 export { ExportFormat } from '../utils/importExport';
-
-// ============================================
-// 组件类型导出
-// ============================================
-
-export type { ToolbarButtonProps as ToolbarButton } from '../components/Toolbar/ToolbarButton';
-export type { ToolbarDropdownProps as ToolbarDropdown } from '../components/Toolbar/ToolbarDropdown';
 
 // ============================================
 // React 导入

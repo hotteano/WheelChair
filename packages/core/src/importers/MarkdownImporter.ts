@@ -4,7 +4,8 @@
  */
 
 import type { Node } from '../model/node';
-import type { ExportFormat, ImportOptions } from '../utils/importExport';
+import { ExportFormat } from '../utils/importExport';
+import type { ImportOptions } from '../utils/importExport';
 import { MarkdownParser, parseMarkdown } from '../utils/markdown';
 
 export interface MarkdownImportOptions extends ImportOptions {

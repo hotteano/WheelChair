@@ -80,7 +80,7 @@ export const CodeBlockView: React.FC<NodeViewProps> = ({
     const loadHighlight = async () => {
       if (!hljs) {
         const mod = await import('highlight.js');
-        hljs = mod.default || mod;
+        hljs = (mod.default || mod) as import('highlight.js').HLJSApi;
         
         // 注册常用语言
         if (language) {

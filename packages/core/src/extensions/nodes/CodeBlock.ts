@@ -27,23 +27,11 @@ declare module '@tiptap/core' {
       /**
        * Set a code block
        */
-      setCodeBlock: (attributes?: CodeBlockAttributes) => ReturnType;
+      setCodeBlock: (attributes?: { language: string }) => ReturnType;
       /**
        * Toggle a code block
        */
-      toggleCodeBlock: (attributes?: CodeBlockAttributes) => ReturnType;
-      /**
-       * Unset a code block
-       */
-      unsetCodeBlock: () => ReturnType;
-      /**
-       * Update code block language
-       */
-      updateCodeBlockLanguage: (language: string) => ReturnType;
-      /**
-       * Toggle line numbers
-       */
-      toggleCodeBlockLineNumbers: () => ReturnType;
+      toggleCodeBlock: (attributes?: { language: string }) => ReturnType;
     };
   }
 }

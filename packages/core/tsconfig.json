@@ -16,5 +16,6 @@
     "alwaysStrict": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.example.tsx"]
 }

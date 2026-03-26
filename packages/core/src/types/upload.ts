@@ -47,7 +47,7 @@ export interface ImageAttributes {
 
 export interface VideoAttributes {
   src: string;
-  type?: 'local' | 'youtube' | 'bilibili' | 'url';
+  type?: 'local' | 'youtube' | 'bilibili' | 'vimeo' | 'youku' | 'url';
   poster?: string;
   width?: number;
   height?: number;

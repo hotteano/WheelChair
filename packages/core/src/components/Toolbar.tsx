@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface ToolbarProps {
+export interface ToolbarProps {
   children: React.ReactNode;
   className?: string;
 }

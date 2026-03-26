@@ -6,9 +6,33 @@
 // ============================================
 // 核心编辑器
 // ============================================
-export * from './core/WheelChairEditor';
-export * from './core/StateManager';
-export * from './core/HistoryManager';
+export {
+	WheelChairEditor,
+	createWheelChairEditor,
+	type EditorSelection,
+	type InsertOptions,
+	type SetContentOptions,
+	type WordCount,
+	type HistoryState,
+	type EditorEventMap,
+	type EventListener,
+	type EventEmitter,
+	type WheelChairEditorOptions,
+} from './core/WheelChairEditor';
+export {
+	StateManager,
+	createStateManager,
+	type EditorStateStore,
+	type EditorStateActions,
+	type EditorStore,
+} from './core/StateManager';
+export {
+	HistoryManager,
+	createHistoryManager,
+	type HistoryEntry,
+	type HistoryManagerOptions,
+	type HistoryState as HistoryManagerState,
+} from './core/HistoryManager';
 
 // ============================================
 // 文档管理

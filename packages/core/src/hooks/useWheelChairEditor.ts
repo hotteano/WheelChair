@@ -3,8 +3,7 @@ import { Editor } from '@tiptap/core';
 import { WheelChairEditor } from '../core/WheelChairEditor';
 import { 
   UseWheelChairEditorOptions, 
-  UseWheelChairEditorReturn,
-  WheelChairEditorOptions 
+  UseWheelChairEditorReturn
 } from '../types';
 
 /**
@@ -35,8 +34,10 @@ export function useWheelChairEditor(
 } {
   const [isReady, setIsReady] = useState(false);
   const [editor, setEditor] = useState<Editor | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const wheelChairEditorRef = useRef<WheelChairEditor | null>(null);
   const elementRef = useRef<HTMLElement | null>(null);
+  const readyUnsubscribeRef = useRef<(() => void) | null>(null);
   const optionsRef = useRef(options);
 
   // 保持 options 引用最新
@@ -63,30 +64,40 @@ export function useWheelChairEditor(
       wheelChairEditorRef.current = null;
     }
 
-    // 创建新的编辑器实例
-    const wheelChairEditor = new WheelChairEditor({
-      ...optionsRef.current,
-      onCreate: (editorInstance) => {
-        setEditor(editorInstance);
-        setIsReady(true);
-        optionsRef.current.onCreate?.(editorInstance);
-      },
-    });
+    if (readyUnsubscribeRef.current) {
+      readyUnsubscribeRef.current();
+      readyUnsubscribeRef.current = null;
+    }
 
-    wheelChairEditor.init(element);
-    wheelChairEditorRef.current = wheelChairEditor;
+    try {
+      setError(null);
 
-    // 订阅就绪状态
-    const unsubscribe = wheelChairEditor.getStateManager().onReadyChange((ready) => {
-      setIsReady(ready);
-      if (ready) {
-        setEditor(wheelChairEditor.getEditor());
-      }
-    });
+      // 创建新的编辑器实例
+      const wheelChairEditor = new WheelChairEditor({
+        ...optionsRef.current,
+        onCreate: (editorInstance) => {
+          setEditor(editorInstance);
+          setIsReady(true);
+          optionsRef.current.onCreate?.(editorInstance);
+        },
+      });
 
-    return () => {
-      unsubscribe();
-    };
+      wheelChairEditor.init(element);
+      wheelChairEditorRef.current = wheelChairEditor;
+
+      // 订阅就绪状态
+      readyUnsubscribeRef.current = wheelChairEditor.getStateManager().onReadyChange((ready) => {
+        setIsReady(ready);
+        if (ready) {
+          setEditor(wheelChairEditor.getEditor());
+          optionsRef.current.onReady?.(wheelChairEditor.getEditor() as Editor);
+        }
+      });
+    } catch (err) {
+      const normalizedError = err instanceof Error ? err : new Error(String(err));
+      setError(normalizedError);
+      optionsRef.current.onError?.(normalizedError);
+    }
   }, []);
 
   // 清理函数
@@ -96,15 +107,21 @@ export function useWheelChairEditor(
         wheelChairEditorRef.current.destroy();
         wheelChairEditorRef.current = null;
       }
+      if (readyUnsubscribeRef.current) {
+        readyUnsubscribeRef.current();
+        readyUnsubscribeRef.current = null;
+      }
       elementRef.current = null;
       setIsReady(false);
       setEditor(null);
+      setError(null);
     };
   }, []);
 
   return {
     editor,
     isReady,
+    error,
     init,
     wheelChairEditor: wheelChairEditorRef.current,
   };
@@ -130,11 +147,12 @@ export function useWheelChairEditorRef(
   /** 绑定到编辑器容器的 ref */
   ref: (element: HTMLElement | null) => void;
 } {
-  const { editor, isReady, init } = useWheelChairEditor(options);
+  const { editor, isReady, error, init } = useWheelChairEditor(options);
 
   return {
     editor,
     isReady,
+    error,
     ref: init,
   };
 }

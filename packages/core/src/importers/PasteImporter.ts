@@ -133,7 +133,12 @@ export class PasteImporter {
 
       const result = this.htmlImporter.import(html, {
         ...mergedOptions.htmlOptions,
-        imageHandler: mergedOptions.imageHandler,
+        imageHandler: mergedOptions.imageHandler
+          ? (src: string) => {
+              const transformed = mergedOptions.imageHandler?.(src);
+              return typeof transformed === 'string' ? transformed : src;
+            }
+          : undefined,
         linkHandler: mergedOptions.linkHandler,
       });
       nodes = result.nodes;

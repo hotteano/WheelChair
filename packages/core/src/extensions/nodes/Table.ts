@@ -5,6 +5,7 @@
  */
 
 import { Node, mergeAttributes } from '@tiptap/core';
+import { TextSelection } from '@tiptap/pm/state';
 import { ToolbarButton } from '../../types';
 
 export interface TableOptions {
@@ -415,7 +416,7 @@ export const Table = Node.create<TableOptions>({
           const nextCell = rowNode.child(cellIndex + 1);
           const pos = $from.after($from.depth - 1) + 1;
           if (dispatch) {
-            dispatch(state.tr.setSelection(state.selection.constructor.near(state.doc.resolve(pos))));
+            dispatch(state.tr.setSelection(TextSelection.near(state.doc.resolve(pos))));
           }
         }
         return true;

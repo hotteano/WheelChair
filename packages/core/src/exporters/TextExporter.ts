@@ -251,7 +251,9 @@ export class TextExporter {
       if (child.type === 'element') {
         const row: string[] = [];
         for (const cell of child.children) {
-          row.push(this.serializeChildren(cell.children, 0, options));
+          if (cell.type === 'element') {
+            row.push(this.serializeChildren(cell.children, 0, options));
+          }
         }
         if (row.length) rows.push(row);
       }

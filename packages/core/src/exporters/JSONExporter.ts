@@ -117,10 +117,12 @@ export class JSONExporter {
   /**
    * 序列化节点
    */
-  private serializeNode(node: Node, options: JSONExportOptions): unknown {
+  private serializeNode(node: Node, options: JSONExportOptions): Record<string, unknown> {
     if (options.nodeHandler) {
       const result = options.nodeHandler(node);
-      if (result !== undefined) return result;
+      if (result !== undefined && result !== null && typeof result === 'object') {
+        return result as Record<string, unknown>;
+      }
     }
 
     if (node.type === 'text') {
@@ -131,7 +133,7 @@ export class JSONExporter {
       return this.serializeElementNode(node as ElementNode, options);
     }
 
-    return null;
+    return {};
   }
 
   /**

@@ -21,6 +21,8 @@
     "dev": "vite build --watch",
     "build": "vite build",
     "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "pnpm lint && pnpm typecheck && pnpm build",
     "clean": "rm -rf dist"
   },
   "peerDependencies": {

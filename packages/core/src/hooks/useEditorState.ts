@@ -38,7 +38,13 @@ const DEFAULT_WORD_COUNT: WordCount = {
 export function useEditorState(
   options: UseEditorStateOptions
 ): UseEditorStateReturn {
-  const { editor, enableWordCount = true, wordCountDebounce = 300 } = options;
+  const {
+    editor,
+    enableWordCount = true,
+    wordCountDebounce,
+    debounceMs = 300,
+  } = options;
+  const resolvedWordCountDebounce = wordCountDebounce ?? debounceMs;
   
   const [content, setContent] = useState<JSONContent | null>(null);
   const [html, setHTML] = useState('');
@@ -83,9 +89,9 @@ export function useEditorState(
 
       wordCountTimerRef.current = setTimeout(() => {
         setWordCount(calculateWordCount(editorInstance));
-      }, wordCountDebounce);
+      }, resolvedWordCountDebounce);
     },
-    [enableWordCount, wordCountDebounce, calculateWordCount]
+    [enableWordCount, resolvedWordCountDebounce, calculateWordCount]
   );
 
   // 订阅编辑器状态
@@ -123,14 +129,14 @@ export function useEditorState(
     }
 
     // 订阅编辑器事件
-    const unsubscribeUpdate = editor.on('update', ({ editor: updatedEditor }) => {
+    const handleUpdate = ({ editor: updatedEditor }: { editor: Editor }) => {
       setContent(updatedEditor.getJSON());
       setHTML(updatedEditor.getHTML());
       setText(updatedEditor.getText());
       debouncedUpdateWordCount(updatedEditor);
-    });
+    };
 
-    const unsubscribeSelection = editor.on('selectionUpdate', ({ editor: updatedEditor }) => {
+    const handleSelectionUpdate = ({ editor: updatedEditor }: { editor: Editor }) => {
       const { selection: newSelection } = updatedEditor.state;
       setSelection({
         from: newSelection.from,
@@ -139,22 +145,27 @@ export function useEditorState(
         anchor: newSelection.anchor,
         head: newSelection.head,
       });
-    });
+    };
 
-    const unsubscribeFocus = editor.on('focus', () => {
+    const handleFocus = () => {
       setIsFocused(true);
-    });
+    };
 
-    const unsubscribeBlur = editor.on('blur', () => {
+    const handleBlur = () => {
       setIsFocused(false);
-    });
+    };
+
+    editor.on('update', handleUpdate);
+    editor.on('selectionUpdate', handleSelectionUpdate);
+    editor.on('focus', handleFocus);
+    editor.on('blur', handleBlur);
 
     // 清理函数
     return () => {
-      unsubscribeUpdate();
-      unsubscribeSelection();
-      unsubscribeFocus();
-      unsubscribeBlur();
+      editor.off('update', handleUpdate);
+      editor.off('selectionUpdate', handleSelectionUpdate);
+      editor.off('focus', handleFocus);
+      editor.off('blur', handleBlur);
       
       if (wordCountTimerRef.current) {
         clearTimeout(wordCountTimerRef.current);
@@ -198,11 +209,15 @@ export function useEditorContent(editor: Editor | null): JSONContent | null {
 
     setContent(editor.getJSON());
 
-    const unsubscribe = editor.on('update', ({ editor: updatedEditor }) => {
+    const handleUpdate = ({ editor: updatedEditor }: { editor: Editor }) => {
       setContent(updatedEditor.getJSON());
-    });
+    };
 
-    return unsubscribe;
+    editor.on('update', handleUpdate);
+
+    return () => {
+      editor.off('update', handleUpdate);
+    };
   }, [editor]);
 
   return content;
@@ -223,11 +238,15 @@ export function useEditorHTML(editor: Editor | null): string {
 
     setHTML(editor.getHTML());
 
-    const unsubscribe = editor.on('update', ({ editor: updatedEditor }) => {
+    const handleUpdate = ({ editor: updatedEditor }: { editor: Editor }) => {
       setHTML(updatedEditor.getHTML());
-    });
+    };
 
-    return unsubscribe;
+    editor.on('update', handleUpdate);
+
+    return () => {
+      editor.off('update', handleUpdate);
+    };
   }, [editor]);
 
   return html;
@@ -248,11 +267,15 @@ export function useEditorText(editor: Editor | null): string {
 
     setText(editor.getText());
 
-    const unsubscribe = editor.on('update', ({ editor: updatedEditor }) => {
+    const handleUpdate = ({ editor: updatedEditor }: { editor: Editor }) => {
       setText(updatedEditor.getText());
-    });
+    };
 
-    return unsubscribe;
+    editor.on('update', handleUpdate);
+
+    return () => {
+      editor.off('update', handleUpdate);
+    };
   }, [editor]);
 
   return text;
@@ -280,7 +303,7 @@ export function useEditorSelection(editor: Editor | null): EditorSelection | nul
       head: pmSelection.head,
     });
 
-    const unsubscribe = editor.on('selectionUpdate', ({ editor: updatedEditor }) => {
+    const handleSelectionUpdate = ({ editor: updatedEditor }: { editor: Editor }) => {
       const { selection: newSelection } = updatedEditor.state;
       setSelection({
         from: newSelection.from,
@@ -289,9 +312,13 @@ export function useEditorSelection(editor: Editor | null): EditorSelection | nul
         anchor: newSelection.anchor,
         head: newSelection.head,
       });
-    });
+    };
 
-    return unsubscribe;
+    editor.on('selectionUpdate', handleSelectionUpdate);
+
+    return () => {
+      editor.off('selectionUpdate', handleSelectionUpdate);
+    };
   }, [editor]);
 
   return selection;
@@ -333,15 +360,17 @@ export function useWordCount(
 
     calculateWordCount();
 
-    const unsubscribe = editor.on('update', () => {
+    const handleUpdate = () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
       timerRef.current = setTimeout(calculateWordCount, debounceMs);
-    });
+    };
+
+    editor.on('update', handleUpdate);
 
     return () => {
-      unsubscribe();
+      editor.off('update', handleUpdate);
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -366,17 +395,20 @@ export function useEditorFocus(editor: Editor | null): boolean {
 
     setIsFocused(editor.isFocused);
 
-    const unsubscribeFocus = editor.on('focus', () => {
+    const handleFocus = () => {
       setIsFocused(true);
-    });
+    };
 
-    const unsubscribeBlur = editor.on('blur', () => {
+    const handleBlur = () => {
       setIsFocused(false);
-    });
+    };
+
+    editor.on('focus', handleFocus);
+    editor.on('blur', handleBlur);
 
     return () => {
-      unsubscribeFocus();
-      unsubscribeBlur();
+      editor.off('focus', handleFocus);
+      editor.off('blur', handleBlur);
     };
   }, [editor]);
 
@@ -400,13 +432,17 @@ export function useEditorEditable(editor: Editor | null): boolean {
 
     // Tiptap 没有直接的 editable change 事件
     // 需要通过 transaction 中的 meta 来判断
-    const unsubscribe = editor.on('transaction', ({ transaction }) => {
+    const handleTransaction = ({ transaction }: { transaction: any }) => {
       if (transaction.getMeta('editable') !== undefined) {
         setIsEditable(transaction.getMeta('editable'));
       }
-    });
+    };
 
-    return unsubscribe;
+    editor.on('transaction', handleTransaction);
+
+    return () => {
+      editor.off('transaction', handleTransaction);
+    };
   }, [editor]);
 
   return isEditable;
